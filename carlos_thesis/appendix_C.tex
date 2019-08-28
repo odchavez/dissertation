@@ -1,0 +1,155 @@
+
+%\appendix 
+
+\chapter{Appendix for Chapter 3}
+\label{appendix_C}
+
+\section{Proper Prior on $(\bfmu_1, \ldots, \bfmu_k, b_1, \ldots, b_k, k)$}
+\label{sec:proper_prior}
+
+Here we show that $p(\bfmu_1, \dots, \bfmu_k, \bfb, k)$ defined in \eqref{eq:prior1} is a proper prior. In fact, since 
+
+$$ \exp\left\{- \alpha \sum_{j=1}^k d(\bfmu_j, \bfmu_{b_j}) \right\}<1, \ \ \ \ \forall \ 1 \leq j \leq k,$$
+
+\noindent it follows that
+
+$$Z_k \leq \int \dots \int_{\mathbb{R}^{p \times k}} \prod_{j=1}^k \left[ p(\bm{\mu}_j)\right]k^k \ d\bfmu_1 \dots  d\bfmu_k = k^k < \infty.$$
+
+\noindent Without loss of generality, we can truncate $P(k)$ to have suport $1\leq k \leq M$ for some finite upper limit $M$ and therefore $p(k)$ will be also proper. The truncation is justified in practical appications since one expects finite number of nodes in the tree.
+
+
+\section{Full Conditional Distributions for the s-MST Model}
+\label{sec:app_smst}
+
+We now describe posterior inference under the s-MST model of Section \ref{sec:soft_mst}. A simple MCMC can be implemented in such a scenario, leading to the Gibbs sampling transition probabilities:
+\begin{enumerate}
+\item Updating $c_i$:
+\begin{align*}
+p (c_i = k | \bm{y}_i, \bfmu_k, \Sigma, w_k) &\propto L(\bm{y}_i | c_i = k, \bfmu_k, \Sigma) \ p(c_i = k | w_k)
+\\
+&\propto w_k \ \mathcal{N} (\bm{y}_i; \bfmu_{k}, \Sigma), \quad \forall k = 0, \dots, k.
+\end{align*}
+
+\item Updating $\bm{w}$:
+\begin{align*}
+p(\bm{w} | c_1, \dots, c_n) &\propto p(c_1, \dots, c_n | \bm{w}) \ p(\bm{w})
+\\
+&\sim \mbox{Dirichlet} (n_0 + \delta, \dots, n_k + \delta).
+\end{align*}
+
+%\item Updating $\Sigma_k, \forall k = 0, \dots, K$:
+%\begin{align*}
+%p (\Sigma_k | Y ,  \mbox{rest}) &\propto L(Y | c_1, \dots, c_n,  \bfmu_k, \Sigma_k) \ p(\Sigma_k)
+%\\
+%&\propto \prod_{i : c_i = k} \left\{ |\Sigma_k|^{-\frac{1}{2}} e^{-\frac{1}{2} (\bm{x}_i - \bfmu_k)^T \Sigma_k^{-1} (\bm{x}_i - \bfmu_k)} \right\} |\Sigma_k|^{- \frac{\nu + p + 1}{2}} e^{ - \frac{1}{2} \mbox{tr} (R \Sigma_k^{-1})}
+%\\
+%&\sim \mathcal{IW} \left( \nu + n_k, \Psi + \sum_{i : c_i = k} (\bm{y}_i - \bfmu_k)(\bm{y}_i - \bfmu_k)^T \right).
+%\end{align*}
+%In the case of unique covariance matrix $\Sigma$, we use all data points to update the parameters, obtaining $p (\Sigma | Y ,  \mbox{rest}) \sim \mathcal{IW} \left( \nu + n, \Psi + \sum_{i} (\bm{y}_i - \bfmu_k)(\bm{y}_i - \bfmu_k)^T \right)$.
+
+\item Updating $\Sigma$:
+\begin{align*}
+p (\Sigma | Y ,  \mbox{rest}) &\propto L(Y |  \bfmu_k, c_1, \dots, c_n, \Sigma) \ p(\Sigma)
+\\
+&\propto \prod_{i=1}^n \left\{ |\Sigma|^{-\frac{1}{2}} e^{-\frac{1}{2} (\bm{x}_i - \bfmu_{c_i})^T \Sigma^{-1} (\bm{x}_i - \bfmu_{c_i})} \right\} |\Sigma|^{- \frac{\nu + p + 1}{2}} e^{ - \frac{1}{2} \mbox{tr} (R \Sigma^{-1})}
+\\
+&\sim \text{Inv-Wishart} \left( \nu + n, \Psi + \sum_{i} (\bm{y}_i - \bfmu_{c_i})(\bm{y}_i - \bfmu_{c_i})^T \right).
+\end{align*}
+
+
+\item Updating $\bfmu_k, \forall k = 1, \dots, k$:
+\begin{align*}
+p (\bfmu_k | Y, \mbox{rest}) &\propto L(Y | c_1, \dots, c_n,  \bfmu_k, \Sigma) \ p(\bfmu_j | \bfmu^{(-j)}, \bfb, \alpha, k)
+\\
+&\sim \mathcal{N} \left((\Sigma_p^{-1} + n_j \Sigma^{-1})^{-1} \left[\Sigma_p^{-1} \bfmu_p + \Sigma^{-1} \sum_{i:c_i = j} \bfy_i \right] , \\
+&\left. \hspace{6 cm}(\Sigma_p^{-1} + n_j \Sigma^{-1})^{-1} \vphantom{ \sum_{i:c_i = j}} \right),
+\end{align*}
+where $f_j, \bfmu_p, \Sigma_p$ were defined in equations \eqref{eq:mu_cond_eucl1} and \eqref{eq:mu_cond_eucl2}.
+
+
+\item Updating the branching structure: by resampling it from the prior conditionals $p(b_j = i | \bfmu_0, \dots, \bfmu_k, \bfb^{(-j)},  k)$ described in \eqref{eq:b_cond}.
+
+%\item Updating the hyperparameter $\alpha$. We can use a Gamma prior (or Exponential), getting posterior conjugacy, i.e. 
+%$$p(\alpha | \bfmu_0, \dots, \bfmu_K, \bfb, K) \sim \text{Gamma} \left(a_\alpha, b_\alpha + \sum_{j=1}^K d(\bfmu_j, \bfmu_{b_j}) \right)$$
+%\textbf{This full conditional is still problematic because values of $\alpha$ too small are sampled. This, in turn, implies the sampling of trees that are not repulsive MST.}
+
+\item Updating the dimension $K$ using a RJ-MCMC move:
+\begin{enumerate}
+\item Generate a proposal $\tilde{k} \sim q(\tilde{k} | k)$ and a matching set of parameters $\tilde{\bm{\theta}}_{\tilde{k}} \sim p_1(\tilde{\bm{\theta}}_{\tilde{k}} | y^\prime)$ as described in Section \ref{sec:mst_inference}
+}
+\item Accept $(\tilde{k}, \tilde{\bm{\theta}}_{\tilde{k}})$ with probability $\alpha$ defined in \eqref{eq:alpha}.
+\end{enumerate}
+\end{enumerate}
+
+\section{Full Conditional Distributions for the h-MST Model}
+\label{sec:app_hmst}
+
+First, we list the full conditional distributions for implementation of Gibbs sampler on the model described in Section \ref{sec:model2_mst} conditionaly on the dimension $k$.
+
+\begin{enumerate}
+
+\item Updating $c_j$:
+
+\begin{align*}
+p (c_i = j | \bm{y}_i, \bfmu_j, \Sigma_j, w_j, k) &\propto L(\bm{y}_i | c_i = j, \bfmu_j, \Sigma) \ p(c_i = j | w_j)
+\\
+&\propto w_j \ \mathcal{N} (\bm{y}_i; \bfmu_{j}, \Sigma_j), \quad \forall j = 0, \dots, k.
+\end{align*}
+
+\item Updating $\bm{w}$:
+\begin{align*}
+p(\bm{w} | c_1, \dots, c_n, k) &\propto p(c_1, \dots, c_n | \bm{w}, k) \ p(\bm{w} \mid k)
+\\
+&\sim \mbox{Dirichlet} (n_0 + \delta, \dots, n_k + \delta).
+\end{align*}
+
+%\item Updating $\lambda_{jd}$:
+%\begin{align*}
+%p(\lambda_{jd} \mid \bfy, \bfmu, \Sigma, \bfc, k) &\propto \prod_{i \in S_j}%p(\bfy_i \mid \bfmu_j, \Sigma_j, c_i, k) p(\lambda_jd)\\
+%& \sim \mbox{InvGamma}\left( \frac{\#S_j}{2} + a, \ \frac{1}{2} \sum_{i \in S_j}(y_i - \bfmu_j)^T\bfe_d\bfe_d^{\top}(y_i - \bfmu_j) + b\right),
+%\end{align*}
+
+%\noindent where $S_j := \{i: \ c_i=j\}$ and $\bfe_d$ denotes the $d$-th eigenvalue of $\Sigma_j$ (which is also the $d$-th column of $\bfE$).
+
+\item Updating $\Sigma^{-1}$
+
+\begin{align*}
+p(\Sigma^{-1} \mid \bfy, rest) &\propto \prod^n_{i=1} p(\bfy_i \mid \bfmu_{c_i}, \Sigma^{-1})p(\Sigma^{-1})\\
+&\sim Wishart \left( n + \nu, \left[ \Psi^{-1} + \sum^{n}_{i}(\bfy_i - \bfmu_{c_i})(\bfy_i - \bfmu_{c_i})^{\top} \right]^{-1}\right).
+\end{align*}
+
+\item Updating $\bfmu_j$:
+
+The conditional posterior density $p(\bfmu_j\mid \bfy, \mbox{rest})$ is not straightforward to either write in analytic form or to sample from. 
+
+Denote by $S_j:=\{i: \ c_i=j\}$ the set of observations that belong to cluster $j$. Combining the likelihood with the h-MST prior, we have
+
+\begin{align*}
+p(\bfmu_j \mid \bfmu^{(-j)}, \bfy, rest)&\propto \left[\prod_{i\in S_j} N(\bfy_i; \bfmu_{j}, \Sigma) N(\bfmu_j; \bfm, \sigma^2_0I)\right]\times \\
+& \hspace{3 cm}\times\exp\left\{-\alpha\mathcal{W}( MST(\bfmu_1, \cdots, \bfmu_k) ) \right\},
+\end{align*}
+
+\noindent in which the sum $\mathcal{W}( MST(\bfmu_1, \cdots, \bfmu_k) )$ involves different terms depending on the position of $\bfmu_j$ in $\mathbb{R}^D$. This leads to the full conditional being a finite mixture of truncated normals, with non-overlapping truncation regions $A_l\subset \mathbb{R}^D, \ l=1, \ldots, n$ such that the neighbors of any node $\bfmu_j\in A_l$ are the same under the $MST(\bfmu_1, \ldots, \bfmu_k)$ when we fix the remaining nodes $\bfmu^{(-j)}$. The challenge lies in defining the regions $A_l$ that partition $\mathbb{R}^D$.
+
+However, we can build a tractable and efficient Metropolis Hastings proposal $q(\tilde{\bfmu}_j \mid \bfmu_j; \bfmu^{(-j)}, \bfy, rest)$ to approximate $p(\bfmu_j\mid \bfy, \mbox{rest})$. We will omit the dependence on variables other than $\bfmu_j$ from the notation for clarity of exposition, therefore writing $q(\tilde{\bfmu}_j \mid \bfmu_j)$ instead of $q(\tilde{\bfmu}_j \mid \bfmu_j; \bfmu^{(-j)}, \bfy, rest)$. We define $q(\tilde{\bfmu}_j \mid \bfmu_j)$ as follows. Take from the edges $E_{\bfmu_1, \ldots, \bfmu_k}$ of the $MST(\bfmu_1, \ldots, \bfmu_k)$  the subset $V_j=\{i: \ \{j,i\} \in E_{\bfmu_1, \ldots, \bfmu_k} \}$ of all neighbors of node $j$. We propose a new component specific mean $\tilde{\bfmu}_j$ from
+
+
+\begin{align*}
+q(\tilde{\bfmu}_j \mid \bfmu_j)\propto \prod_{i\in S_j} N(\bfy_i; \tilde{\bfmu}_{j}, \Sigma) N(\tilde{\bfmu}_j; \bfm, \sigma^2_0I) \exp\left\{-\alpha\sum_{i \in V_j} d^2(\bfmu_i, \tilde{\bfmu}_j) \right\},
+\end{align*}
+
+\noindent which simplifies to $q(\tilde{\bfmu}_j \mid \bfmu_j)\sim N(\tilde{\bfmu_j}; \ \bfa_j, \bfB_j),$ where \ $\bfB_j = ( |S_j| \Sigma^{-1} +$ $\sigma^{-2}_0 I + 2\alpha |V_j|I )^{-1}$ and \ $\bfa_j = \bfB_j\left( \Sigma^{-1} \sum_{i \in S_j}\bfy_i + \sigma^{-2}_0\bfm + 2\alpha\sum_{l \in V_j}\bfmu_l\right).$ By denoting the proposed neighborhood of $\tilde{\bfmu}_j$ as $\tilde{V}_j=\{i: \{i,j\} \in E_{\bfmu^*_1, \ldots, \bfmu^*_k}\}$ where $\bfmu^*_l = \bfmu_l$ if $l\neq j$ and $\bfmu^*_j = \tilde{\bfmu}_j$, the resulting Metropolis Hastings acceptance probability equals 1 if $\tilde{V}_j = V_j$ and
+
+\begin{align*}
+\alpha&( \tilde{\bfmu}_j \mid \bfmu_j) = \min\left\{ 1, \frac{q(\bfmu_j \mid \tilde{\bfmu_j}) p(\tilde{\bfmu}_j\mid \bfy)}{q(\tilde{\bfmu}_j \mid \bfmu_j)p(\bfmu_j \mid \bfy))}\right\}\\
+&=\min \left\{ 1, \ \ \frac{ \left[ \prod_{i\in S_j} N(\bfy_i; \tilde{\bfmu}_j, \Sigma_{j}) \right] N(\tilde{\bfmu}_j; \bfm, \sigma^2_0I)}{   \left[ \prod_{i\in S_j} N(\bfy_i; \bfmu_j, \Sigma_j) \right] N(\bfmu_j; \bfm, \sigma^2_0I) } \times \right.\\
+&\hspace{2 cm} \times \left. \frac{\exp\left\{-\alpha\mathcal{W}( MST(\tilde{\bfmu}_j, \bfmu^{(-j)}) ) \right\}}{\exp\left\{-\alpha\mathcal{W}( MST(\bfmu_1, \cdots, \bfmu_k) ) \right\} } \times \frac{N(\bfmu_j; \ \tilde{\bfa}_j, \tilde{\bfB}_j)}{N(\tilde{\bfmu}_j; \ \bfa_j, \bfB_j)} \right\}
+\end{align*}
+\begin{align*}
+\ \ \ \ =\min \left\{1, \ \ \frac{ \left[ \prod_{i\in S_j} N(\bfy_i; \tilde{\bfmu}_j, \Sigma_{j}) \right] N(\tilde{\bfmu}_j; \bfm, \sigma^2_0I) }{   \left[ \prod_{i\in S_j} N(\bfy_i; \bfmu_j, \Sigma_j) \right] N(\bfmu_j; \bfm, \sigma^2_0I)}\frac{N(\bfmu_j; \ \tilde{\bfa}_j, \tilde{\bfB}_j)}{N(\tilde{\bfmu}_j; \ \bfa_j, \bfB_j)} \right. \times\\
+\times\left. \frac{\exp\left\{-\alpha \sum_{i \in \tilde{V}_j} d^2(\tilde{\bfmu}_j, \bfmu_i) \right\}}{  \exp\left\{-\alpha\sum_{i \in V_j} d^2(\bfmu_j, \bfmu_i) \right\}  } \right\}
+\end{align*}
+
+\noindent otherwise.
+
+\end{enumerate}

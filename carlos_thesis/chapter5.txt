@@ -1,0 +1,47 @@
+Chapter 5
+
+The common theme of the three major projects in this thesis was the
+use of dependent priors for mixtures and random partitions. 
+We discussed some motivating examples where the scientific research
+questions naturally give rise to such dependent structures. 
+Information on a specific form of dependence represents potentially
+useful expert knowledge, which should be exploited when
+available. It is still common practice, however, to ignore such domain
+knowledge and proceed with default independent priors.
+For the specific examples discussed in this thesis we constructed
+suitable dependent models, developed practicable posterior inference
+methods and demonstrated the proposed approaches in simulation studies
+and in the actual applications.
+
+Many open questions remain. For the application to cell lineage data,
+the approach proposed in Chapter 3 can be characterized as an
+empirical fit to the data with a model that respects the dependencies
+that arise from the nature of the data. In future research we plan to
+consider alternative generative models that mimick the actual biologic
+process of how cells diversify. A generative model is used, for
+example, in Schiffman et al. (20xx), however still without using
+restrictions and informative priors that would arise from the nature
+of the data.
+
+Also for the problem of matching patients and patient clusters with
+representative cell lines that we considered in Chapter 4, many open
+questions remain.
+In the currently proposed model we match each patient cluster with one
+representative cell line, implicitly allowing each cell line to be
+paired with only one patient cluster. This restriction could be
+removed, giving rise to a slightly different random structure.
+Another aspect of the problem is that investigators have a preference
+for reporting very distinct clusters of proteins (genes) and similarly
+for the nested clusters of patients. That is, the desired summary of
+the random partition should perhaps take into account preferences for
+parsimony and interpretability. And such preferences could
+alternatively already be included in the prior probability model.
+One approach is the use of repulsive prior probability models that
+favor very distinct clusters, for example the determinantal point
+process (DPP) (Xu et al, 201x).
+Similar issues arise with the applications in Chapters 2 and 3.
+
+
+
+
+

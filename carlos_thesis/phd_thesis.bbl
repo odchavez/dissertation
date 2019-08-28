@@ -1,0 +1,420 @@
+\begin{thebibliography}{}
+
+\bibitem[Akaike, 1973]{akaike1973}
+Akaike, H. (1973).
+\newblock Maximum likelihood identification of {G}aussian autoregressive moving
+  average models.
+\newblock {\em Biometrika}, 60(2):255--265.
+
+\bibitem[Alston et~al., 2012]{alston2012bayesian}
+Alston, C.~L., Strickland, C.~M., Mengersen, K.~L., and Gardner, G.~E. (2012).
+\newblock Bayesian mixed effects models.
+\newblock {\em Case Studies in Bayesian Statistical Modelling and Analysis},
+  pages 141--158.
+
+\bibitem[Azadi et~al., 2016]{pik3_ref}
+Azadi, S., Brush, R.~S., Anderson, R.~E., and Rajala, R.~V. (2016).
+\newblock Class {I} phosphoinositide 3-kinase exerts a differential role on
+  cell survival and cell trafficking in retina.
+\newblock In {\em Retinal Degenerative Diseases: Mechanisms and Experimental
+  Therapy}, pages 363--369, Cham. Springer International Publishing.
+
+\bibitem[Blei et~al., 2017]{blei2017}
+Blei, D.~M., Kucukelbir, A., and McAuliffe, J.~D. (2017).
+\newblock Variational inference: {A} review for statisticians.
+\newblock {\em {J}ournal of the {A}merican {S}tatistical {A}ssociation},
+  112(518):859--877.
+
+\bibitem[Boruvka, 1926]{boruuvka1926contribution}
+Boruvka, O. (1926).
+\newblock Contribution to the solution of a problem of economical construction
+  of electrical networks.
+\newblock {\em Elektronick{\`y} Obzor}, 15:153--154.
+
+\bibitem[Bush and MacEachern, 1996]{bush1996}
+Bush, C.~A. and MacEachern, S.~N. (1996).
+\newblock {A semiparametric Bayesian model for randomised block designs}.
+\newblock {\em Biometrika}, 83(2):275--285.
+
+\bibitem[Caron et~al., 2017]{caronetal:07}
+Caron, F., Neiswanger, W., Wood, F., Doucet, A., and Davy, M. (2017).
+\newblock Generalized {P}{{\'o}}lya urn for time-varying {P}itman-{Y}or
+  processes.
+\newblock {\em Journal of Machine Learning Research}, 18(27):1--32.
+
+\bibitem[Caunt et~al., 2015]{mek_ref}
+Caunt, C.~J., Sale, M.~J., Smith, P.~D., and Cook, S.~J. (2015).
+\newblock {MEK}1 and {MEK}2 inhibitors and cancer therapy: the long and winding
+  road.
+\newblock {\em Nature Reviews Cancer}, 15(10):577--592.
+
+\bibitem[Charboneau et~al., 2002]{rppa_ref}
+Charboneau, L., Scott, H., Chen, T., Winters, M., Petricoin, E.~F., Liotta,
+  L.~A., et~al. (2002).
+\newblock Utility of reverse phase protein arrays: applications to signalling
+  pathways and human body arrays.
+\newblock {\em Briefings in Functional Genomics and Proteomics}, 1(3):305--315.
+
+\bibitem[Chung and Dunson, 2011]{chung2011local}
+Chung, Y. and Dunson, D.~B. (2011).
+\newblock The local {D}irichlet process.
+\newblock {\em Annals of the Institute of Statistical Mathematics},
+  63(1):59--80.
+
+\bibitem[Cristinelli and Ciuffi, 2018]{cristinelli2018use}
+Cristinelli, S. and Ciuffi, A. (2018).
+\newblock The use of single-cell {RNA-Seq} to understand virus--host
+  interactions.
+\newblock {\em Current opinion in virology}, 29:39--50.
+
+\bibitem[Dahl, 2006]{dahl2006}
+Dahl, D.~B. (2006).
+\newblock Model-based clustering for expression data via a {D}irichlet process
+  mixture model.
+\newblock {\em Bayesian Inference for Gene Expression and Proteomics}, pages
+  201--218.
+
+\bibitem[Damien and Walker, 2001]{damien2001}
+Damien, P. and Walker, S.~G. (2001).
+\newblock Sampling truncated normal, beta, and gamma densities.
+\newblock {\em Journal of Computational and Graphical Statistics},
+  10(2):206--215.
+
+\bibitem[Dellaportas and Papageorgiou, 2006]{Dellaportas2006}
+Dellaportas, P. and Papageorgiou, I. (2006).
+\newblock Multivariate mixtures of normals with unknown number of components.
+\newblock {\em Statistics and Computing}, 16(1):57--68.
+
+\bibitem[Dempster et~al., 1977]{Rubin1977}
+Dempster, A.~P., Laird, N.~M., and Rubin, D.~B. (1977).
+\newblock Maximum likelihood from incomplete data via the {E}{M} algorithm.
+\newblock {\em Journal of the Royal Statistical Society. Series B
+  (Methodological)}, 39(1):1--38.
+
+\bibitem[Dharampuriya et~al., 2017]{dharampuriya2017tracking}
+Dharampuriya, P.~R., Scapin, G., Wong, C., Wagner, K.~J., Cillis, J.~L., and
+  Shah, D.~I. (2017).
+\newblock Tracking the origin, development, and differentiation of
+  hematopoietic stem cells.
+\newblock {\em Current opinion in cell biology}, 49:108--115.
+
+\bibitem[Elliott et~al., 2018]{elliott2018}
+Elliott, L.~T., De~Iorio, M., Favaro, S., Adhikari, K., Teh, Y.~W., et~al.
+  (2018).
+\newblock Modeling population structure under hierarchical {D}irichlet
+  processes.
+\newblock {\em Bayesian Analysis.}
+\newblock Advance publication, DOI: 10.1214/17-BA1093.
+
+\bibitem[Engelman, 2009]{engelman2009targeting}
+Engelman, J.~A. (2009).
+\newblock Targeting {PI3K} signalling in cancer: opportunities, challenges and
+  limitations.
+\newblock {\em Nature Reviews Cancer}, 9(8):550.
+
+\bibitem[Ferguson, 1973]{ferguson1973}
+Ferguson, T.~S. (1973).
+\newblock A bayesian analysis of some nonparametric problems.
+\newblock {\em Annals of Statistics}, 1(2):209--230.
+
+\bibitem[Ferguson et~al., 1992]{BNP_Ferguson}
+Ferguson, T.~S., Phadia, E.~G., and Tiwari, R.~C. (1992).
+\newblock {B}ayesian {N}onparametric {I}nference.
+\newblock {\em Lecture Notes-Monograph Series}, 17:127--150.
+
+\bibitem[Fletcher et~al., 2017]{fletcher2017deconstructing}
+Fletcher, R.~B., Das, D., Gadye, L., Street, K.~N., Baudhuin, A., Wagner, A.,
+  Cole, M.~B., Flores, Q., Choi, Y.~G., Yosef, N., et~al. (2017).
+\newblock Deconstructing olfactory stem cell trajectories at single-cell
+  resolution.
+\newblock {\em Cell Stem Cell}, 20(6):817--830.
+
+\bibitem[Fr{\"u}hwirth-Schnatter, 2006]{fruhwirth2006finite}
+Fr{\"u}hwirth-Schnatter, S. (2006).
+\newblock {\em Finite mixture and Markov switching models}.
+\newblock Springer Science \& Business Media.
+
+\bibitem[Fr{\"u}hwirth-Schnatter et~al., 2019]{handbookmixtures2019}
+Fr{\"u}hwirth-Schnatter, S., Celeux, G., and Robert, C. (2019).
+\newblock {\em Handbook of Mixtures}.
+\newblock CRC Press.
+
+\bibitem[Gelman et~al., 2014]{gelman2014}
+Gelman, A., Hwang, J., and Vehtari, A. (2014).
+\newblock Understanding predictive information criteria for {B}ayesian models.
+\newblock {\em Statistics and Computing}, 24(6):997--1016.
+
+\bibitem[Goodspeed et~al., 2016]{goodspeed2016}
+Goodspeed, A., Heiser, L.~M., Gray, J.~W., and Costello, J.~C. (2016).
+\newblock Tumor-derived cell lines as molecular models of cancer
+  pharmacogenomics.
+\newblock {\em Molecular Cancer Research}, 14(1):3--13.
+
+\bibitem[Green, 1995]{green1995}
+Green, P.~J. (1995).
+\newblock Reversible jump {M}arkov chain {M}onte {C}arlo computation and
+  {B}ayesian model determination.
+\newblock {\em Biometrika}, 82(4):711--732.
+
+\bibitem[Kingman, 1978]{kingman:78}
+Kingman, J. F.~C. (1978).
+\newblock Random partitions in population genetics.
+\newblock {\em Proceedings of the Royal Society. London. Series A.
+  Mathematical, Physical and Engineering Sciences}, 361(1704):1--20.
+
+\bibitem[Korthauer et~al., 2016]{korthauer2016statistical}
+Korthauer, K.~D., Chu, L.-F., Newton, M.~A., Li, Y., Thomson, J., Stewart, R.,
+  and Kendziorski, C. (2016).
+\newblock A statistical approach for identifying differential distributions in
+  single-cell {RNA-seq} experiments.
+\newblock {\em Genome biology}, 17(1):222.
+
+\bibitem[Kulesza and Taskar, 2012]{dpp_original}
+Kulesza, A. and Taskar, B. (2012).
+\newblock Determinantal point processes for machine learning.
+\newblock {\em Foundations and Trends® in Machine Learning},
+  5(2–3):123--286.
+
+\bibitem[Lachos et~al., 2013]{lachos2013bayesian}
+Lachos, V.~H., Castro, L.~M., and Dey, D.~K. (2013).
+\newblock Bayesian inference in nonlinear mixed-effects models using normal
+  independent distributions.
+\newblock {\em Computational Statistics \& Data Analysis}, 64:237--252.
+
+\bibitem[Lau and Green, 2007]{lau2007bayesian}
+Lau, J.~W. and Green, P.~J. (2007).
+\newblock Bayesian model-based clustering procedures.
+\newblock {\em Journal of Computational and Graphical Statistics},
+  16(3):526--558.
+
+\bibitem[Lee et~al., 2015]{lee2015bayesian}
+Lee, J., M{\"u}ller, P., Gulukota, K., Ji, Y., et~al. (2015).
+\newblock A {B}ayesian feature allocation model for tumor heterogeneity.
+\newblock {\em The Annals of Applied Statistics}, 9(2):621--639.
+
+\bibitem[Lee et~al., 2013]{lee2013}
+Lee, J., M{\"u}ller, P., Zhu, Y., and Ji, Y. (2013).
+\newblock A nonparametric {B}ayesian model for local clustering with
+  application to proteomics.
+\newblock {\em Journal of the American Statistical Association},
+  108(503):775--788.
+
+\bibitem[Lindstrom and Bates, 1990]{lindstrom1990nonlinear}
+Lindstrom, M.~J. and Bates, D.~M. (1990).
+\newblock Nonlinear mixed effects models for repeated measures data.
+\newblock {\em Biometrics}, pages 673--687.
+
+\bibitem[Liu et~al., 2009]{liu2009targeting}
+Liu, P., Cheng, H., Roberts, T.~M., and Zhao, J.~J. (2009).
+\newblock Targeting the phosphoinositide 3-kinase pathway in cancer.
+\newblock {\em Nature Reviews Drug Discovery}, 8(8):627.
+
+\bibitem[Mardia et~al., 1979]{mardia1979}
+Mardia, K.~V., Kent, J.~T., and Bibby, J.~M. (1979).
+\newblock {\em Multivariate Analysis}.
+\newblock London, Academic Press.
+
+\bibitem[Miragaia et~al., 2017]{miragaia2017single}
+Miragaia, R.~J., Teichmann, S.~A., and Hagai, T. (2017).
+\newblock Single-cell insights into transcriptomic diversity in immunity.
+\newblock {\em Current Opinion in Systems Biology}, 5:63--71.
+
+\bibitem[Neal, 2003]{neal:03}
+Neal, R. (2003).
+\newblock Density modeling and clustering using {D}irichlet diffusion trees.
+\newblock In Bernardo, J., Bayarri, M.~J., Dawid, A.~P., Berger, J.~O.,
+  Heckerman, D., Smith, A. F.~M., and West, M., editors, {\em {B}ayesian
+  Statistics 7}, pages 619--629, Oxford, UK. Oxford University Press.
+
+\bibitem[Nitulescu et~al., 2016]{akt_ref}
+Nitulescu, G., Margina, D., Juzenas, P., Peng, Q., Olaru, O., Saloustros, E.,
+  et~al. (2016).
+\newblock {AKT} inhibitors in cancer treatment: the long journey from drug
+  discovery to clinical use (review).
+\newblock {\em International Journal of Oncology}, 48(3):869--885.
+
+\bibitem[O'Hagan, 1995]{o1995fractional}
+O'Hagan, A. (1995).
+\newblock Fractional {B}ayes factors for model comparison.
+\newblock {\em Journal of the Royal Statistical Society. Series B
+  (Methodological)}, 57(1):99--138.
+
+\bibitem[Park and Casella, 2008]{bayesian_lasso}
+Park, T. and Casella, G. (2008).
+\newblock The {B}ayesian lasso.
+\newblock {\em Journal of the American Statistical Association},
+  103(482):681--686.
+
+\bibitem[Parmigiani et~al., 2002]{poe_2002}
+Parmigiani, G., Garrett, E.~S., Anbazhagan, R., and Gabrielson, E. (2002).
+\newblock A statistical framework for expression-based molecular classification
+  in cancer.
+\newblock {\em Journal of the Royal Statistical Society. Series B (Statistical
+  Methodology)}, 64(4):717--736.
+
+\bibitem[Perraudeau et~al., 2017]{perraudeau2017}
+Perraudeau, F., Risso, D., Street, K., Purdom, E., and Dudoit, S. (2017).
+\newblock Bioconductor workflow for single-cell rna sequencing: Normalization,
+  dimensionality reduction, clustering, and lineage inference.
+\newblock {\em F1000Research}, 6.
+
+\bibitem[Pitman and Yor, 1987]{PIYO97}
+Pitman, J. and Yor, M. (1987).
+\newblock The two-parameter {P}oisson-{D}irichlet distribution derived from a
+  stable subordinator.
+\newblock {\em The Annals of Probability}, 25:855--900.
+
+\bibitem[Podsypanina et~al., 2001]{podsypanina2001inhibitor}
+Podsypanina, K., Lee, R.~T., Politis, C., Hennessy, I., Crane, A., Puc, J.,
+  et~al. (2001).
+\newblock An inhibitor of m{TOR} reduces neoplasia and normalizes p70/{S}6
+  kinase activity in $\mbox{{PTEN}}^{+/-}$ mice.
+\newblock {\em Proceedings of the National Academy of Sciences},
+  98(18):10320--10325.
+
+\bibitem[Prim, 1957]{prim1957shortest}
+Prim, R.~C. (1957).
+\newblock Shortest connection networks and some generalizations.
+\newblock {\em Bell Labs Technical Journal}, 36(6):1389--1401.
+
+\bibitem[Richardson and Green, 1997]{richardson1997}
+Richardson, S. and Green, P.~J. (1997).
+\newblock On {B}ayesian analysis of mixtures with an unknown number of
+  components (with discussion).
+\newblock {\em Journal of the Royal Statistical Society: series B (statistical
+  methodology)}, 59(4):731--792.
+
+\bibitem[Risso et~al., 2018]{zinbwave}
+Risso, D., Perraudeau, F., Gribkova, S., Dudoit, S., and Vert, J.-P. (2018).
+\newblock A general and flexible method for signal extraction from single-cell
+  {RNA-seq} data.
+\newblock {\em Nature Communications}, 9(1):284.
+
+\bibitem[Robert and Casella, 2013]{robert2013}
+Robert, C. and Casella, G. (2013).
+\newblock {\em Monte Carlo Statistical Methods}.
+\newblock Springer Science \& Business Media.
+
+\bibitem[Rodr\'{\i}guez and Ter~Horst, 2008]{rodriguez&terhorst:08}
+Rodr\'{\i}guez, A. and Ter~Horst, E. (2008).
+\newblock {B}ayesian dynamic density estimation.
+\newblock {\em {B}ayesian Analysis}, {\bf 3}:339--366.
+
+\bibitem[Rousseau and Mengersen, 2011]{rousseau2011asymptotic}
+Rousseau, J. and Mengersen, K. (2011).
+\newblock Asymptotic behaviour of the posterior distribution in overfitted
+  mixture models.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 73(5):689--710.
+
+\bibitem[Schwarz, 1978]{schwarz1978}
+Schwarz, G. (1978).
+\newblock Estimating the dimension of a model.
+\newblock {\em The Annals of Statistics}, 6(2):461--464.
+
+\bibitem[Serra et~al., 2011]{serra2011pi3k}
+Serra, V., Scaltriti, M., Prudkin, L., Eichhorn, P.~J., Ibrahim, Y.~H.,
+  Chandarlapaty, S., et~al. (2011).
+\newblock {PI3K} inhibition results in enhanced {HER} signaling and acquired
+  {ERK} dependency in {HER2}-overexpressing breast cancer.
+\newblock {\em Oncogene}, 30(22):2547.
+
+\bibitem[Sethuraman, 1994]{sethuraman1994}
+Sethuraman, J. (1994).
+\newblock A constructive definition of dirichlet priors.
+\newblock {\em Statistica sinica}, pages 639--650.
+
+\bibitem[{Shiffman} et~al., 2018]{Shiffman18}
+{Shiffman}, M., {Stephenson}, W.~T., {Schiebinger}, G., {Huggins}, J.,
+  {Campbell}, T., {Regev}, A., and {Broderick}, T. (2018).
+\newblock {Reconstructing probabilistic trees of cellular differentiation from
+  single-cell {RNA-seq} data}.
+\newblock {\em arXiv e-prints}, arXiv:1811.11790.
+
+\bibitem[Sinha et~al., 2015]{sinha2015}
+Sinha, R., Schultz, N., and Sander, C. (2015).
+\newblock Comparing cancer cell lines and tumor samples by genomic profiles.
+\newblock {\em bioRxiv}, page 028159.
+
+\bibitem[Spiegelhalter et~al., 2002]{spiegelhalter2002}
+Spiegelhalter, D.~J., Best, N.~G., Carlin, B.~P., and Van Der~Linde, A. (2002).
+\newblock {B}ayesian measures of model complexity and fit.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 64(4):583--639.
+
+\bibitem[Street et~al., 2018]{street2018}
+Street, K., Risso, D., Fletcher, R.~B., Das, D., Ngai, J., Yosef, N., Purdom,
+  E., and Dudoit, S. (2018).
+\newblock Slingshot: cell lineage and pseudotime inference for single-cell
+  transcriptomics.
+\newblock {\em BMC Genomics}, 19(1):477.
+
+\bibitem[Stubbington et~al., 2017]{stubbington2017single}
+Stubbington, M.~J., Rozenblatt-Rosen, O., Regev, A., and Teichmann, S.~A.
+  (2017).
+\newblock Single-cell transcriptomics to explore the immune system in health
+  and disease.
+\newblock {\em Science}, 358(6359):58--63.
+
+\bibitem[S{\"u}li and Mayers, 2003]{suli2003}
+S{\"u}li, E. and Mayers, D.~F. (2003).
+\newblock {\em An introduction to numerical analysis}.
+\newblock Cambridge university press.
+
+\bibitem[Teh et~al., 2011]{TehAl:11}
+Teh, Y.~W., Blundell, C., and Elliott, L. (2011).
+\newblock Modelling genetic variations using fragmentation-coagulation
+  processes.
+\newblock In {\em Advances in Neural Information Processing Systems 24}, pages
+  819--827. Curran Associates, Inc.
+
+\bibitem[Teh et~al., 2006]{HDP}
+Teh, Y.~W., Jordan, M.~I., Beal, M.~J., and Blei, D.~M. (2006).
+\newblock Hierarchical {D}irichlet processes.
+\newblock {\em Journal of the American Statistical Association},
+  101(476):1566--1581.
+
+\bibitem[Wade et~al., 2018]{wade2018bayesian}
+Wade, S., Ghahramani, Z., et~al. (2018).
+\newblock Bayesian cluster analysis: point estimation and credible balls.
+\newblock {\em Bayesian Analysis}, 13(2):526--558.
+
+\bibitem[Watanabe, 2010]{watanabe2010}
+Watanabe, S. (2010).
+\newblock Asymptotic equivalence of {B}ayes cross validation and widely
+  applicable information criterion in singular learning theory.
+\newblock {\em Journal of Machine Learning Research}, 11(Dec):3571--3594.
+
+\bibitem[Wilson and G{\"o}ttgens, 2018]{wilson2018single}
+Wilson, N.~K. and G{\"o}ttgens, B. (2018).
+\newblock Single-cell sequencing in normal and malignant hematopoiesis.
+\newblock {\em Hemasphere}, 2(2):e34.
+
+\bibitem[Xu et~al., 2016]{xu2016bayesian}
+Xu, Y., M{\"u}ller, P., and Telesca, D. (2016).
+\newblock Bayesian inference for latent biologic structure with determinantal
+  point processes (dpp).
+\newblock {\em Biometrics}, 72(3):955--964.
+
+\bibitem[Yin and Zhou, 2018]{yin2018}
+Yin, M. and Zhou, M. (2018).
+\newblock Semi-implicit variational inference.
+\newblock In Dy, J. and Krause, A., editors, {\em Proceedings of the 35th
+  International Conference on Machine Learning}, volume~80 of {\em Proceedings
+  of Machine Learning Research}, pages 5660--5669, Stockholmsmässan, Stockholm
+  Sweden. PMLR.
+
+\bibitem[Zanini et~al., 2019]{zanini2019}
+Zanini, C. T.~P., M\"{u}ller, P., Ji, Y., and Quintana, F.~A. (2019).
+\newblock A {B}ayesian random partition model for sequential refinement and
+  coagulation.
+\newblock {\em Biometrics}, pages (in press),
+  https://doi.org/10.1111/biom.13047.
+
+\bibitem[Zhang et~al., 2004]{zhang2004}
+Zhang, Z., Chan, K.~L., Wu, Y., and Chen, C. (2004).
+\newblock Learning a multivariate {G}aussian mixture model with the reversible
+  jump {MCMC} algorithm.
+\newblock {\em Statistics and Computing}, 14(4):343--355.
+
+\end{thebibliography}

@@ -1,0 +1,214 @@
+
+%\appendix 
+
+\chapter{Appendix for Chapter 2}
+\label{appendix_B}
+
+\section{Full Conditionals}
+\label{sec:full_cond}
+
+We briefly describe the full conditional posterior distributions,
+numbered (1) through (9) below, that define the transition
+probabilities in the Gibbs sampler MCMC implementation. We define $\bfPsi:=(\bftheta, \bfy)$ as the random vector that includes the full parameter vector as well as the data, and we use the notation $\bfPsi_{-a}$ to represent $\bfPsi$ excluding component $a$.
+
+\begin{enumerate}
+\item {\bf Updating $v_{0u},$} $ u = 1, 2, 3$:
+  \begin{multline*}
+  (v_{0u} \mid \bfPsi_{-v_{0u}}) \sim \mbox{Gamma}\left(a_v + \frac{1}{2}CDL
+  \times \kappa_{u}, \right.  \\
+  \left. b_v + \frac{1}{2}\sum^C_{c=1} \sum^D_{d=1}
+  \sum^L_{\ell=1} \sum^{\kappa_u}_{m=1}(\mu^*_{cd\ell u}(m) -
+  \mu_{0u})^2\right).
+  \end{multline*}
+
+\item {\bf Updating $\mu_{0u},$} $u = 1, 2, 3$:
+  \begin{multline*}
+  (\mu_{0u} \mid \bfPsi_{-\mu_{0u}}) \sim N\left(\frac{ v_{0u}\sum^C_{c=1}
+  \sum^{D}_{d=1} \sum^L_{\ell=1} \sum^{\kappa_{u}}_{m=1} \mu^*_{cd\ell
+    u}(m) + \mu_{00}v_{00} }{ v_{00} + CDL \times \kappa_{u} v_{0u} },
+  \right. \\
+  \left. \frac{1}{ v_{00} + CDL \times \kappa_{u} v_{0u} }\right).$$
+\end{multline*}
+
+\item {\bf Updating $\mu^*_{cd \ell u}$: }
+From equation (1), the vector $\bfmu_{cd\ell i}$ can be written as
+$$
+\bfmu_{cd\ell i} = \mu^*_{cd\ell 1}\left(\delta^1_{cdi}\right)\bfu_1 +
+\mu^*_{cd\ell 2}\left(\delta^2_{cdi}\right)\bfu_2 + \mu^*_{cd\ell
+  3}\left(\delta^1_{cdi}\right)\bfu_3,
+$$
+where
+$\bfu_1 = (1, \ldots, 1, 0, \ldots, 0)^{\top}$,
+$\bfu_2 = (0, \ldots, 0, 1, \ldots, 1, 0, \ldots, 0)^{\top}$
+           and
+$\bfu_3 = (0, \ldots, 0,\\ 1, \ldots, 1)^{\top}$
+with 1's in positions $1,\ldots,\tau^1_{cd\ell}$ (for $\bfu_1$),
+in positions $\tau^1_{cd\ell}+1 \ldots \tau^2_{cd\ell}$ (for $\bfu_2$) and
+in position $\tau^2_{cd\ell} + 1 \ldots T$ (for $\bfu_3$), respectively.
+We find that $(\mu^*_{cd\ell 1}(m) \mid \bfPsi_{-\mu^*_{cd\ell 1}(m)}) \sim N(a_1, b_1)$, with
+$b_1 = (v_{01} + J (\#\mathcal{P}^m_{cd1}) \bfu_1^{\top}\bfSigma^{-1}_c
+\bfu_1)^{-1}$
+and
+\begin{multline*}
+  a_1 = b_1\, \left[\left(\sum_{i \in \mathcal{P}^m_{cd1}}\sum_j
+    \bfy_{cd\ell ij} - J\bfu_2
+    \sum_{i \in  \mathcal{P}^m_{cd1}}\mu^*_{cd\ell 2}(\delta^2_{cdi}) -
+    J(\#\mathcal{P}^m_{cd1}) \bfu_3 \mu^*_{cd\ell 3}(m) \right)^{\top} \right. \\
+    \left.\vphantom{\sum_{i \in  \mathcal{P}^m_{cd1}}} \bfSigma^{-1}_c \bfu_1 + \mu_{01}v_{01} \right],
+\end{multline*}
+    
+  where $\mathcal{P}^m_{cd1} := \{1\leq i \leq I: \delta^1_{cdi} = m \}.$\\
+Similarly, $(\mu^*_{cd \ell 2}(m) \mid \bfPsi_{- \mu^*_{cd \ell 2}(m)}) \sim N(a_2, b_2)$, with \\
+$  b_2 =(v_{02} + J (\#\mathcal{P}^m_{cd2})
+\bfu_2^{\top}\bfSigma^{-1}_c \bfu_2)^{-1}$ and
+
+\begin{multline*}
+a_2 = b_2\, \left[\left(
+  \sum_{i \in \mathcal{P}^m_{cd2}} \sum_j \bfy_{cd\ell ij} - J\bfu_1
+  \sum_{i \in \mathcal{P}^m_{cd2}}\mu^*_{cd\ell 1}(\delta^1_{cdi}) 
+  - J\bfu_3
+  \sum_{i \in \mathcal{P}^m_{cd\ell 2}}\mu^*_{cd \ell 3}(\delta^1_{cdi})\right)^{\top}\left.\\
+     \left. \vphantom{\sum_{i \in \mathcal{P}^m_{cd2}} \sum_j}\bfSigma^{-1}_c \bfu_2 + \mu_{02}v_{02}\right], 
+\end{multline*}
+
+where $\mathcal{P}^m_{cd2} := \{1\leq i \leq I: \delta^2_{cdi} = m \}$.\\
+And $(\mu^*_{cd \ell 3}(m) \mid \bfPsi_{-\mu^*_{cd \ell 3}(m)}) \sim N(a_3, b_3)$, with \\
+$b_3 = (v_{03} + J (\#\mathcal{P}^m_{cd1}) \bfu_3^{\top}\bfSigma^{-1}_c
+\bfu_3)^{-1}$ and
+
+\begin{multline*}
+  a_3 = b_3\, \left[\left( \sum_{i \in \mathcal{P}^m_{cd1}} \sum_j \bfy_{cd\ell ij} - J\bfu_2 \sum_{i \in \mathcal{P}^m_{cd1}}\mu^*_{cd\ell 2}(\delta^2_{cdi}) - J(\#\mathcal{P}^m_{cd1})\bfu_1 \mu^*_{cd\ell 1}(m) \right)^{\top} \right.\\
+\left. \vphantom{\sum_{i \in \mathcal{P}^m_{cd2}} \sum_j}    \bfSigma^{-1}_c\bfu_3 + \mu_{03}v_{03}\right].
+\end{multline*}
+%
+\item {\bf Updating $\bfSigma_c$: }
+Under the normal-inverse Wishart conjugate model we get
+\begin{multline*}
+(\bfSigma_c \mid \bfPsi_{-\bfSigma_c}) \sim IW\left( IDLJ + \nu_{\Sigma}, \vphantom{\sum^J_{j=1}}\right. \\
+\left. \sum^I_{i=1} \sum^D_{d=1} \sum^L_{\ell=1}
+\sum^J_{j=1}(\bfy_{cdi\ell j} - \bfmu_{cd\ell i} )(\bfy_{cdi\ell j} -
+\bfmu_{cd\ell i} )^{\top} + V_{\Sigma_c} \right)
+\end{multline*}
+%
+\item {\bf Updating $\gamma$: }
+\begin{multline*}
+  (\gamma \mid \bfPsi_{-\gamma}) \sim \mbox{Beta}\left( a_{\gamma} + \sum^C_{c=1}
+  \sum^D_{d=1} \sum^I_{i=1} \mathds{1}(\delta^2_{cdi} = \delta^1_{cdi}),
+ \right. \\ 
+  \left. b_{\gamma} + 
+  \sum^C_{c=1} \sum^D_{d=1} \sum^I_{i=1} \mathds{1}(\delta^2_{cdi} \neq
+  \delta^1_{cdi} ) \right)
+\end{multline*}
+%
+\item {\bf Updating $\tau^1_{cd\ell}$ and $\tau^2_{cd\ell}$: }
+We update $\tau^1_{cd\ell}$ and $\tau^2_{cd\ell}$ in different blocks of
+the Gibbs sampler. This way we evaluate fewer scenarios than in the
+case of sampling both together in a single step, due to the
+restriction $\tau^1_{cd\ell}<\tau^2_{cd\ell}$.
+\begin{gather}
+ p(\tau^1_{cd\ell} \mid \bfPsi_{-\tau^1_{cd\ell}} ) \propto \prod^I_{i=1}
+ \prod^J_{j=1} N(\bfy_{cd\ell ij}; \bfmu_{cd\ell i}, \bfSigma_c), \ \ \
+ \tau^1_{cd\ell}<\tau^2_{cd\ell}. \nonumber \\
+ p(\tau^2_{cd\ell} \mid \bfPsi_{-\tau^2_{cd\ell}} ) \propto \prod^I_{i=1}
+ \prod^J_{j=1} N(\bfy_{cd\ell ij}; \bfmu_{cd\ell i}, \bfSigma_c), \ \ \
+ \tau^1_{cd\ell}<\tau^2_{cd\ell}.
+ \label{eq:tau}
+\end{gather}
+If evaluating the probabilities in \eqref{eq:tau} is too
+computationaly intensive, one can alternatively implement
+a Metropolis-Hastings transition probability, proposing 
+% for sampling from each conditional proposing
+unit increments or decrements, subject to the constraint
+$\tau^1_{cd\ell}<\tau^2_{cd\ell}$. This would require at most
+four evaluations of the right hand side product in \eqref{eq:tau}.  \ech
+
+\item {\bf Updating cluster membership indicators $\delta^1_{cdi}$: }
+  If $\delta^2_{cdi}\leq \kappa_1$, then $\delta^1_{cdi}$ is equal to the value of
+  $\delta^2_{cdi}$ with probability 1. Otherwise, by multinomial-Dirichlet
+  conjugacy results, the full conditional distribution of
+  $\delta^1_{cdi}$ is
+  $
+  P(\delta^1_{cdi} =m \mid \bfPsi_{-\delta^1_{cdi}}) \propto
+  \NN^1_{cdi}(m)\pi^1_{m}$, 
+  $m=1,\ldots,\kappa_1$ 
+%         \sim \mbox{Multinomial}\left((1, \ldots, \kappa_1); \ \ \
+% (, \ldots,
+%   \NN^1_{cdi}(\kappa_1)\pi_{1
+%     \kappa_1})/\sum^{\kappa_1}_{m=1}\NN^1_{cdi}(m)\pi_{1m}\right),
+%   $$
+where $\NN^1_{cdi}(m)=\prod_{\ell} \prod_j N(\bfy_{cd\ell ij} \mid
+\bfmu_{cd\ell i}, \bfSigma_c )$ with $\bfmu_{cd\ell i}$ evaluated under
+$\delta^1_{cdi}=m$. 
+%
+\item {\bf Updating cluster membership indicators $\delta^2_{cdi}$: }
+The full conditional p.m.f. for $\delta^2_{cdi}$ is given by
+\begin{equation*}
+P(\delta^2_{cdi} = m \mid \bfPsi_{-\delta^2_{cdi}}) \propto
+\begin{cases}
+  \gamma \times \NN^2_{cdi}(\delta^1_{cdi} )
+  %{ \gamma  \NN^2_{cdi}(\delta^1_i ) + (1-\gamma) \sum^{\kappa_2 -
+  %\kappa_1}_{m=\kappa_1+1} \pi^2_{m-\kappa_1}\NN^2_{cdi}(m) }, \ \ \
+  & \mbox{ if } m =  \delta^1_{cdi}.\\ 
+  (1-\gamma) \times \pi^2_{m-\kappa_1}  \NN^2_{cdi}(m)
+  % { \gamma \NN^2_{cdi}(\delta^1_i) + (1-\gamma) \sum^{\kappa_2 -
+  %   \kappa_1}_{m=\kappa_1+1} \pi_{2, m-\kappa_1}\NN^2_{cdi}(m)},   \ \ \ 
+  & \mbox{ if } \kappa_1+1\leq m \leq \kappa_2.
+\end{cases}
+\end{equation*}
+where $\NN^2_{cdi}(m)=\prod_{\ell} \prod_j
+N(\bfy_{cd\ell ij} \mid \bfmu_{cd\ell i}, \bfSigma_c )$ with $\bfmu_{cd\ell
+i}$ being calculated assuming $\delta^2_{cdi}=m$. 
+%
+\item {\bf Updating $\bfpi_{1}$ and $\bfpi_2$: }
+under the conjugate multinomial-Dirichlet model we
+find the following posterior distribution.
+Let 
+$n^1_m = \sum^C_{c=1} \sum^D_{d=1} \\ \sum^I_{i=1}
+\mathds{1}(\delta^1_{cdi}=m)$. 
+for $m=1, \ldots, \kappa_1$.
+Similarly, let 
+$n^2_m = \sum^C_{c=1} \sum^D_{d=1}$ $\sum^I_{i=1} \mathds{1}(\delta^2_{cdi}=m)$ for 
+$m=\kappa_1+1,\ldots,\kappa_1+\kappa_2$.
+Then $
+  (\bfpi_1 \mid \bfPsi_{-\bfpi_1}) \sim \Dir(\eta_{11}     +n^1_1,\ldots,
+                               \eta_{1\kappa_1}+n^1_{\kappa_1})
+$
+and
+%   \mbox{Dirichlet}\left( \eta_{11} +
+% , \ \ldots\  \right. \\
+%   &\hspace{5 cm} \left. \ \ldots \ , \ \eta_{1 \kappa_1} + \sum^C_{c=1} \sum^D_{d=1} \sum^I_{i=1} \mathds{1}(\delta^1_{cdi}=\kappa_1) \right).
+$
+(\bfpi_2 \mid \bfPsi_{-\bfpi_2}) \sim \Dir(\eta_{21}+n^2_{\kappa_1+1}, \ldots, 
+                     \eta^2_{\kappa_2-\kappa_1} +n^2_{\kappa_1+\kappa_2}). 
+$
+
+% \begin{align*}
+%   (\bfpi_2 \mid \ldots) &\sim \mbox{Dirichlet}\left( \eta_{21} + \sum^C_{c=1} \sum^D_{d=1} \sum^I_{i=1} \mathds{1}(\delta^2_{cdi}=1 + \kappa_1),  \ \ldots \ \right. \\
+%   &\hspace{5 cm} \left. \ \ldots \ , \ \eta_{2, \kappa_2 - \kappa_1} + \sum^C_{c=1} \sum^D_{d=1} \sum^I_{i=1} \mathds{1}(\delta^2_{cdi}=\kappa_2) \right) .
+% \end{align*}
+\end{enumerate}
+
+
+\section{Number of Model Parameters for AIC and BIC}
+\label{sec:number_param}
+
+Here we describe how the number of parameters was determined when
+evaluating the BIC criterion in sections 4 and 5 and
+AIC in section 4. The description focuses on BIC, but
+the same arguments are valid for evaluation of AIC. 
+
+The number of parameters for a given model is a function of $\kappa_1$ and
+$\kappa_2$ that can be decomposed as $N(\kappa_1, \kappa_2) = f( \kappa_1,
+\kappa_2) + const$, where $const$ depends on the number of data points,
+but not on $\kappa_1$ or $\kappa_2$. 
+The only parameters in the likelihood that vary in number as $\kappa_1$ and
+$\kappa_2$ change are
+$\{\bfmu^*_{\ell ,u}: c\in [C], d\in [D], \ell \in [L], u \in [3] \}$,
+which contains
+$f(\kappa_1, \kappa_2) = CDL(2\kappa_1 + \kappa_2)$ parameters.
+Therefore, $BIC = 2 \log p(\bfy \mid \theta) 
+- N(\kappa_1, \kappa_2) \log n,$ where $n$ is the number of observations,
+hence the comparison of any pair of models is invariant with respect to
+the term $const$ and we can, for simplicity, consider $N(\kappa_1,
+\kappa_2) = CDL(2\kappa_1 + \kappa_2)$.
+

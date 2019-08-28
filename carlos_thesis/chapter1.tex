@@ -1,0 +1,230 @@
+\chapter{Introduction}
+\index{Introduction@\emph{Introduction}}%
+
+\section{Objectives and Outline}
+
+This work develops new methodology for Bayesian dependent mixture models and dependent random partitions with applications to biomedical data. A mixture model implies a random distribution over partitions by randomly assigning individual observations to latent subpopulations that correspond to the distinct components of the mixture. Subpopulations are typically homogeneous, but heterogeneous accross groups. In the biomedical applications studied here, the mixture components capture different levels of gene/protein expression, distinct stages of cellular development or the response to distinct drugs. Multiple forms of dependence are considered in order to more accurately model biological features of the studied applications, including dependence over time (Chapter \ref{ch:biometrics}), dependence by arrangement on a tree (Chapter \ref{ch:cell_lineage}) and by shared match with paired cell lines (Chapter \ref{ch:cell_line_patients}).
+
+\textbf{Summary and contributions}
+
+\begin{enumerate}
+\item In Chapter \ref{ch:biometrics}, we model changes in protein expression after cell lines are exposed to drugs (protein inhibitors) in an reverse phase protein array  (RPPA) experiment. We allow for clusters of proteins with different treatment effects, and allow these clusters to change over time. The proposed dependent random partitions define a refinement and coagulation of protein clusters over time. We implement the approach using a time-course RPPA dataset consisting of protein expression measurements under different drugs, dose levels, and cell lines.\\
+\textbf{Biologic motivations:} The biologic motivation for the experiment and the developed inference approach is in to determine which proteins are affected by each inhibitor and what is how intense is the effect based on the dose that is administered.\\
+\textbf{Contributions:} We developed a time-dependent random partition mod-el that is defined by a sequence of random refinements and coagulations at random change points. The model includes monotonicity as implied by the application. In the motivating application, such dependence accounts for the identification of the proteins that are affected by drugs, although the proposed model can also be used in different applications that exhibit similar patterns.
+
+\item In Chapter \ref{ch:cell_lineage}, we introduce dependent mixture models when the cluster locations are naturally connected by a spanning tree. The motivating application is inference for cell lineage data on the basis of single cell RNA sequencing (scRNAseq) data for cell differentiation. The terms of the mixture model are interpreted as distinct cell types, including a known root cell population and final differentiated cells. We propose prior models based on prior shrinkage of a minimum spanning tree (MST) of cluster centers. \\
+\textbf{Biologic motivations:} Related inference can eventually help investigators to better understand the process of cell differentiation including potential targets for treatment of pathological conditions.\\
+\textbf{Contributions: } We develop a dependent mixture model where the dependence arrises from the nature of the components as the nodes of an underlying latent random tree. The dependence is represented by a regularization factor in the prior distribution of the locations of the nodes and it penalizes over-complex tree structures. 
+
+\item In Chapter \ref{ch:cell_line_patients}, we construct a novel Bayesian statistical approach for matching patient samples with cell lines. We propose a statistical approach that seamlessly combines the output of the Bayesian mixture model based on a proposal by \cite{poe_2002} with a novel two-way Bayesian non-parametric (BNP) mixture model that is constructed as an extension of a BNP bi-clustering model of \cite{lee2013}.\\
+\textbf{Biologic motivations:} Our approach expands on the traditional precision medicine procedures of using the patients specific omics profile in order to propose a personalized treatment that is expected to work the best for that patient. When matching similar cell line profiles to the patient's own omics information, we can gather more data to use in treatment design while still focusing on the patient profile. This approach also enables less invasive approaches for drug testing, since the similar cell lines can be used to infer the expected effect on the patients before they receive the treatment.\\
+\textbf{Contributions: } The research described in Chapter \ref{ch:cell_line_patients} makes  two important methodological contributions in Bayesian non-parametrics: (i) the  seamless integration  of the (modified) probability of expression (POE) model for noise reduction  and the nested bi-clustering  approach; (ii) the introduction of a novel random structure to allow probabilistic modeling of co-clustering between cell lines and patients based on profile similarities via dependent priors on partition models.
+
+\end{enumerate}
+
+Finally, in Chapter \ref{ch:conclusions} we present conclusions and future work. Appendix \ref{appendix_A} contains a list of well known probability distributions with the parameterization that is used throughout the thesis. Appendix \ref{appendix_B} contains additional information that details the implementation of the MCMC algorithm that is discussed in Chapter \ref{ch:biometrics}, as well as details on the use of AIC and BIC to select the number of clusters. Appendix \ref{appendix_C} describes details for the MCMC algorithm to sample from the posterior distribution under the two models proposed in Chapter \ref{ch:cell_lineage}: h-MST and s-MST. Finally, Appendix \ref{appendix_D} contains the full conditionals for the Metopolis within Gibbs algorithms that are used to sample from the posterior distribution under the models described in Chapter \ref{ch:cell_line_patients} POE model and uder the NobLoc model with matching of cell lines and patients.
+
+
+\section{The Bayesian Inference Framework}
+
+We introduce notation by way of a brief review of Bayesian inference for parameter estimation and prediction. Consider a random object $Y$ with an assumed probability distribution that is indexed by a parameter vector $\bftheta$. Here, $Y$ could be, for example, a random variable, a random vector, a random process or even a random measure. With the objective of understanding the probabilistic behavior of $Y,$ a random sample $\bfy = y_1, \ldots, y_n$ is collected from $Y$ and, based on it, we produce estimates of $\bftheta$. This procedure works because the observed data carries information about the parameter $\bftheta$ which is mathematically coded in the likelihood function $l(\boldsymbol{\cdot} \ ; \ \bfy): \boldsymbol{\Theta} \rightarrow \mathbb{R^+}, \mbox{ defined as } \ l(\boldsymbol{\theta} ; \ \bfy)=p(\bfy\mid \boldsymbol{\theta})$ as a function of $\bftheta$, where $\boldsymbol{\Theta}$ is the parameter space and $p(\bfy\mid \boldsymbol{\theta})$ is the density function (or the probability mass function) of $\bfy$. The likelihood function can therefore be interpreted as a measurement of plausibility for $\bftheta$ in the light of the observed data $\bfy$.
+
+Under the Bayesian paradigm, subjective prior information about $\bftheta$ is also considered. Such information is mathematically represented by the prior distribution $\pi(\bftheta)$ which is specified unconditionally on the observed data. Bayes theorem establishes the use of prior and likelihood to update uncertainty about $\bftheta$.\\
+
+\noindent \textbf{Bayes theorem:} Let $\bftheta \in \bfTheta$ be the parameter, $p(\bftheta)$ the density or probability mass function a priori, and $\bfy$ the vector of observations with likelihood $l(\bftheta;  \bfy)=p(\bfy\mid\bftheta)$. Then, the posterior distribution is given by
+
+\begin{equation*}
+p(\bftheta\mid \bfy) = \frac{p(\bfy\mid\bftheta)p(\bftheta)}{\int p(\bfy\mid\bftheta)p(\bftheta)d\bftheta} \propto p(\bfy\mid\bftheta)p(\bftheta),
+\end{equation*}
+
+\noindent where the product $p(\bfy\mid\bftheta)\pi(\bftheta)$, as well as any of its multiples by any factor that does not depend on $\bftheta$, is known as the kernel of $\pi(\bftheta \mid \bfy)$.\\
+\end{myth}
+
+All information on the parameter $\bftheta$ after seeing the data is contained in the posterior distribution with associated density (or probability mass function) $p(\cdot\mid \bfy): \bfTheta \rightarrow \mathbb{R^+}$. The posterior distribution is used to calculate estimates of the parameters as well as to make predictions for new data $\bfy^*$ through the predictive distribution 
+\begin{align*}
+p(\bfy^* \mid \bfy) &= \int_{\Theta} p(\bfy^* \mid \bftheta)\ dp(\bftheta \mid \bfy)\\
+&=\begin{cases}
+\int\limits_{\ \ \ \ \Theta} p(\bfy^* \mid \bftheta)p(\bftheta \mid \bfy)d\bftheta, &\mbox{(continuous case)}\\
+\sum\limits_{\bftheta \in \Theta} p(\bfy^* \mid \bftheta)p(\bftheta \mid \bfy)d\bftheta, &\mbox{(discrete case)}.
+\end{cases}
+\end{align*}
+
+\noindent The predictive distribution can be interpreted as an average of the new data likelihood $p(\bfy^* \mid \bftheta)$ weighted by the posterior $p(\bftheta \mid \bfy)$ on the observed data. The predictive distribution does not depend on $\bftheta$ in its analytical form.
+
+
+\section{Bayesian Mixture Models}
+
+A large class of attractive models in Bayesian inference, especially in biomedical research problems, are hierarchical and related mixture models. Mixture models are probabilistic models obtained from the integration of a parameterized probability density (or probability mass function) with respect to a mixing measure on the parameter. For example, Gaussian mixture models are obtained as
+
+\begin{equation}
+p(\bfy \mid \bftheta) = \int  N(\bfy \mid \bfmu, \bfSigma) \ dG_{\bftheta}(\bfmu, \Sigma), 
+\label{eq:mixture_general}
+\end{equation}
+
+\noindent where $N(\bfx \mid \bfa,  \bfB)$ denotes the density of a (multivariate) Gaussian distribution with mean $\bfa$ and covariance matrix $\bfB$ evaluated at $\bfx$. The mixing measure $G_{\bftheta}$ is typically parameterized by unknown parameters $\bftheta$, resulting in $p(\bfy \mid \bftheta)$ also being parameterized by $\bftheta$. The model specification is completed by specifying a hyperprior on $\bftheta$. 
+
+Many different models $p(\bfy \mid \bftheta)$ can be written as in \eqref{eq:mixture_general}, depending on the choice of the mixing measure $G_{\bftheta}$ and the prior on $\bftheta$. We focus on cases where the integrand in \eqref{eq:mixture_general} is Gaussian, although any other distribuitions could also be considered.
+
+\begin{exem}
+(Discrete Gaussian mixture model) In the case of a discrete mixing measure $G_{\bftheta}(\cdot) = \sum_k w_kI_{\mu_k, \Sigma_k}(\cdot)$ with $I_{x}(\cdot)$ denoting a unit point mass (Dirac measure) at $x$, we have $\bftheta = \left( w_k, \bfmu_k, \bfSigma_k, k=1, \ldots, K\right)$ and the mixture reduces to $p(\bfy \mid \bftheta) = \sum^K_{k=1} w_k N(\bfy ; \bfmu_{k}, \Sigma_k)$. Here we allow for either finite discrete mixtures ($K\in \mathbb{N}$) or infinite discrete mixtures ($K=\infty$).
+\label{ex:discrete_gaussian_mixture}
+\end{exem}
+
+\begin{exem}
+(Student-t as a Gaussian scale mixture) Consider the unidimensional case $y\in \mathbb{R}$, with $p(y\mid \mu, \sigma^2) = N(y \mid \mu, \sigma^2).$ If $G_{\alpha, \beta}(\cdot)$ is the $Gamma(\alpha, \beta)$ distribution on $\sigma^{-2}$ for fixed $\mu$, then the mixture is a location-scale $\text{Student-t}\left(2\alpha, \mu, \sqrt{\frac{\beta}{\alpha}} \right):$
+\begin{align*}
+p(y &\mid \mu, \alpha, \beta) = \int N(y \mid \mu, \sigma^2) dG_{\alpha, \beta}(\sigma^{-2})\propto\\
+&\propto \int^{+\infty}_0(\sigma^{-2})^{\frac{1}{2} }\exp\left\{ -\frac{1}{2}(y - \mu)^2 \sigma^{-2}\right\} \times (\sigma^{-2})^{\alpha - 1} \exp(-\beta \sigma^{-2})d(\sigma^{-2})\propto\\
+&\propto \left[  \frac{\alpha(y - \mu)^2}{\beta}+ 2 \alpha \right]^{-\frac{2\alpha + 1}{2}}.
+\end{align*}
+\label{ex:tstudent_mixture}
+\end{exem}
+
+\begin{exem}
+(Laplace as a Gaussian scale mixture) Consider the univariate case $p(y\mid \mu, \sigma^2)$ with mixing measure $G_{\lambda}(\sigma^2)$ being the $Exp\left(\frac{\lambda^2}{2}\right)$ distribution. Then $(y \mid \lambda, \mu) \sim Laplace(\lambda, \mu, 1)$:
+
+\begin{align*}
+p(y \mid \lambda, \mu) &= \int^{+\infty}_0 N(y\mid \mu, \sigma^2)dG_{\lambda}(\sigma^2)\\
+&\propto \int^{+\infty}_0 (\sigma^2)^{-\frac{1}{2}}\exp\left\{ -\frac{1}{2}\sigma^{-2}(y - \mu)^2\right\}\exp\left\{-\frac{\lambda^2}{2}\sigma^2\right\}d\sigma^2\\
+&\propto \exp\left\{ -\lambda |y - \mu| \right\}.
+\end{align*}
+\label{ex:laplace_mixture}
+
+\noindent An important application of the Laplace distribution as a scale mixture of normals arises in the Bayesian lasso \citep{bayesian_lasso} variable selection approach where the Laplace prior is responsible for an $L_1$ regularization of the coefficients and the augmentation provided by the scale mixture representation guarantees conjugacy for the full conditionals of the Gibbs sampler (section \ref{sec:gibbs}), therefore simplifying the algorithm.
+
+\end{exem}
+
+We focus on discrete Gaussian mixtures as in Example \ref{ex:discrete_gaussian_mixture}. Implementing posterior simulation, the parameter space is augmented to include latent group assignment variables (or cluster membership indicators) $\delta_i,$ $i = 1, \ldots, n$ for observations $y_i$. The event $\{\delta_i = k\}$ indicates that observation $i$ is sampled from the subpopulation $k$, i.e., $(\bfy_i \mid \delta_i = k, \bfmu_k, \Sigma_k) \sim N(\bfy_i\mid \bfmu_k, \Sigma_k)$. The probability vector $\bfw = (w_1, \ldots, w_K)$ then serves as prior for the cluster membership indicators: $P(\delta_i = k \mid \bfw) = w_k$.
+
+
+The final step to define the Bayesian discrete Gaussian mixture model is to specify the prior for the atoms $(\bfmu_k, \bfSigma_k)^K_{k=1}$ and for the probability vector $\bfw$, i.i., $G_{\bftheta}$ in \eqref{eq:mixture_general}. There are many possibilities for defining such priors. For finite discrete Gaussian mixtures ($K<\infty$) a common choice is a Dirichlet distribution for the weights: $\bfw \sim Dirichlet(\eta)$ and an i.i.d. conditionally conjugate prior for the atoms: $\bfmu_k \sim N(\bfmu_0, \bfSigma_0)$, $\bfSigma_k \sim IW(\nu, \Psi)$. To summarize, the full Bayesian model in this case is:
+
+$$(\bfy_i \mid \delta_i = k, \bfmu_k, \Sigma_k) \sim N(\bfy_i\mid \bfmu_k, \Sigma_k), $$
+$$P(\delta_i = k \mid \bfw) = w_k,$$
+
+\noindent and priors,
+
+\begin{equation}
+\bfw \sim Dirichlet(\bfeta), \ \bfmu_k \sim N(\bfmu_0, \bfSigma_0), \ \bfSigma_k \sim IW(\nu, \Psi).
+\label{eq:prior_G}
+\end{equation}
+
+Under the representation of the mixture model in equation \eqref{eq:mixture_general} as an expectation with respect to a mixing measure $G_{\bftheta}$ it is natural to interpret \eqref{eq:prior_G} as a prior on $G_{\bftheta}$, in this case indexed by a fixed dimension vector of hyperparameters ($\bfeta, \bfmu_0, \bfSigma_0, \nu, \Psi$). In general, prior probability models on random probability measures such as $G_{\bftheta}$ are also known aas non-parametric Bayes models (BNP) \citep{BNP_Ferguson}. In this sense, mixture models are naturally linked with BNP priors.
+
+
+\subsection{Bayesian non parametrics and mixture models}
+
+In contrast to parametric approaches, non-parametric models include infinitely many parameters which under the Bayesian framework requires a prior on a space of infinite dimensions. The main motivation for non-parametric models is the flexibility that is achieved in comparison with a parametric model with finite dimensional parameter space. In this section we will present some applications of Bayesian non-parametric (BNP) priors for mixture models.
+
+We start with the arguably simplest non-parametric model on random probability measures: the Dirichlet process (DP) \citep{ferguson1973}. If $G \sim DP(G_0, \alpha)$, we say that $G$ is a random measure following a Dirichlet process with baseline probability measure $G_0$ on a set $S$ and concentration parameter $\alpha$. \cite{ferguson1973} defines  $G \sim DP(G_0, \alpha)$  by defining probability assignments on partitions of $S$ as 
+$$(G(B_1), \ldots, G(B_K) ) \sim \mbox{ Dirichlet}( (\alpha G_0(B_1), \ldots, \alpha G_0(B_K)) )$$
+for any measurable partition $S = B_1 \cup \ldots \cup B_K$ for any $K\in \mathbb{N}$. The author shows that the DP is well defined, meaning that there are no inconsistencies with the random assignment of probabilities through the DP. 
+
+However, the definition provided by \cite{ferguson1973} does not directly allow for an easy way of, for example, simulating such random measure. Simulation of a DP random measure is important to implement Bayesian inference in models involving DP's. \cite{sethuraman1994} provided a very simple and efficient way of sampling a DP. The procedure is called stick breaking representation and it works as follows. First generate a sequence of atoms $(\bftheta_k)^{+\infty}_{k=1}$. For each $k \in \mathbb{N}$ sample $\beta_k \sim Beta(1, \alpha)$ and create a probability vector $\bfw = (w_k)^{\infty}_{k=1}$ as $w_1 = \beta_1$, $w_k = \beta_k\prod_{\ell < k}(1 - \beta_{\ell})$ for $K>1$. This defines$G(\cdot) = \sum^{\infty}_{k=1}w_k I_{\bftheta_k}(\cdot)$. The stick breaking construction by itself already gives valuable insights on $G\sim DP(G_0, \alpha)$ when $G_0$ is a continuous probability measure: (1) $G$ is a discrete probability measure with infinite number of atoms; (2) the atoms are sampled i.i.d. from the baseline measure; (3) the atoms are a dense set in the support of $G_0$; (4) $\alpha$ controls the rate of decay of the weights $w_k$ as $k \rightarrow \infty$.
+
+%The mixture model as we introduced in (WHATEVER) OR THE ITERPRETATION as BNP prior implies more implicitly impose indepence a priori on the cluster specific parameters (the atoms of the mixing measure in case it is discrete). The main reason for doing so is for mathematical convenience and easy interpretations. However in some applications this assumption is an undesireble simplification and more complicated models are needed. Chapters describe the extension 
+
+
+\section{Markov Chain Monte Carlo Posterior Simulation}
+
+In many important Bayesian models, it is not possible to evaluate posterior integrals analytically. Alternatively, there are many numerical quadrature integration methods to approximate $p(\bfy)$, such as the trapezoids rule, Simpson integration formula, Gauss Hermite quadrature and more (for a brief introduction, see for example \citealt{suli2003}). Such methods usually work well when $\bftheta$ is low dimensional because then the construction of the grid of points to integrate over can be reasonably distributed over the parameter space $\bfTheta$. However, in moderate dimension (say $p=8$ or beyond) the construction of such a grid reaches a prohibitive computational cost.
+
+In these cases, either optimization or simulation based methods are used. Regarding optimization algorithms, gradient descent for maximum a posteriori (MAP), expectation-maximization (EM) \citep{Rubin1977} and variational inference \citep{blei2017} are among the most popular methods. An issue with optimization approaches is the way uncertainty is treated: posterior inference under optimization methods is typically limited to point estimates. In case of variational inference, we can use the variational posterior $q(\bftheta)$ as an approximation for the true posterior $p(\bftheta \mid \bfy)$ and report uncertainty in using $q$. However $q$ could be a poor approximation for $p$ if the space of variational distributions is too restricted, e.g. under the mean field assumption (independence of the components of $\bftheta$). See \cite{yin2018} for an expansion on the commonly used analytic variational distribution family that produces accurate variational approximations in a broad range of scenarios.
+
+In this work, we will focus on simulation approaches. Perhaps the most popular is Markov chain Monte Carlo (MCMC), which simulates a random Markov chain having the posterior $p(\bftheta \mid \bfy)$ as its invariant distribution. Then assuming ergodicity, averages over the simulated states approximate posterior integrals as the algorithm iterates.
+
+Next we describe two popular MCMC sampling schemes in preparation for Chapters 2, 3 and 4: the Gibbs sampler and the Metropolis-Hastings algorithms.
+
+\subsection{Metropolis Hastings}\\
+
+Consider a target probability distribution with density $\pi(\bfx)$ and support $\mathcal{X} \subset \mathbb{R}^d$ from which we want to obtain a random sample by MCMC simulation. We suppose that $\pi(\bfx)$ is analytically available up to a proportionality constant, i.e., $\pi(\bfx) = \pi^*(\bfx) C^{-1}$ where $C$ is unknown and the kernel $\pi^*(\bfx)$ is available in analytic form with $\int_{\mathcal{X}} \pi^*(\bfx) d\bfx = C$. For example, $\pi(\bfx)$ could be a posterior distribution in a Bayesian inference problem, i.e., $\bfx = \bftheta$ and $\mathcal{X} = \Theta$ with $\pi(\bftheta) = p(\bftheta \mid \bfy)$. We already saw that the kernel of the posterior distribution is analyticaly available when the prior $p(\bftheta)$ and the likelihood $p(\bfy \mid \bftheta)$ are analytically available.
+
+The objective is to build an irreducible and aperiodic Markov chain with transition probability $p(\bftildex \mid \bfx)$ having invariant distribution $\pi(\bfx)$. Such conditions guarantee the convergence of the Markov chain to its target invariant distribution $\pi(\bfx)$. It is usually easy to build an irreducible aperiodic Markov chain. A sufficient condition for invariance is the detailed balance condition.\\
+
+
+\noindent \textbf{Detailed balance condition:} If $\pi(\bftildex) p(\bfx \mid \bftildex) = \pi(\bfx)\pi(\bftildex \mid \bfx), \ \forall \bfx, \ \bftildex$ then $\pi(\bfx)$ is the invariant distribution of the Markov chain with transition $p(\bfx\mid \bftildex)$. In this case, we say that $p(\bftildex \mid \bfx)$ satisfies the detailed balance condition with respect to the invariant distribution $\pi(\bfx)$.\\
+
+To create a transition $p(\bftildex \mid \bfx)$ that satisfies the detailed balance condition with respect to $\pi(\bfx)$ we start with an initial proposal $q(\bftildex \mid \bfx)$ on $\mathcal{X}$ that is irreducible and aperiodic. The initial proposal will usually violate detailed balance condition, i.e., for some pairs $(\bftildex, \bfx) \in \mathcal{X} \times \mathcal{X}$, $\pi(\bfx)q(\bfx \mid \bftildex) \neq \pi(\bftildex) q(\bftildex \mid \bfx)$. Suppose without loss of generality that a pair  $(\bftildex, \bfx)$ satisfies $\pi(\bfx)q(\bfx \mid \bftildex) > \pi(\bftildex) q(\bftildex \mid \bfx)$. Then we include the multiplicative terms $0<\alpha(\bfx \mid \bftildex)<1$ and $\alpha(\bftildex \mid \bfx)$ to form a new transition probability $p(\bftildex \mid \bfx) \propto q(\bftildex \mid \bfx)\alpha(\bftildex \mid \bfx)$ under which the pair $(\bftildex, \bfx)$ satisfies
+
+\begin{equation}
+\pi(\bftildex){\underbrace{q(\bfx \mid \bftildex) \alpha(\bfx \mid \bftildex)}_{p(\bfx \mid \bftildex)} = \pi(\bfx){\underbrace{q(\bftildex \mid \bfx) \alpha(\bftildex \mid \bfx)}_{p(\bftildex \mid \bfx)}.
+\label{eq:MH_detailed_balance}
+\end{equation}
+ 
+\noindent Analogously, for pairs $(\bftildex, \bfx)$ satisfying $\pi(\bftildex)q(\bfx \mid \bftildex ) < \bfpi(\bfx) q(\bftildex \mid \bfx)$, we take $0<\alpha(\bftildex \mid \bfx)<1$ and $\alpha(\bfx \mid \bftildex)$ where $\alpha(\bfx \mid \bftildex)$ is also chosen to satisfy equation \ref{eq:MH_detailed_balance}. We can combine both cases by taking 
+
+$$\alpha(\bfx \mid \bftildex) = \left\{ 1, \ \frac{\pi(\bfx)q(\bftildex \mid \bfx)}{\pi(\bftildex) q(\bfx \mid \bftildex)} \right\}.$$
+
+\noindent The chain with transition $p(\bftildex \mid \bfx) \propto \alpha(\bftildex \mid \bfx) q(\bftildex \mid \bfx)$ satisfies the detailed balance condition. Notice that $\alpha(\bftildex \mid \bfx)$ can be evaluated even if we only have the kernel of the target distribution analytically available.
+
+We iteratively sample from the Markov chain with transition probability $p(\bftildex \mid \bfx) = \alpha(\tilde{\bfx} \mid \bfx)q(\tilde{\bfx} \mid \bfx) + (1-\alpha(\tilde{\bfx}\mid \bfx) )I_{\bfx}(\tilde{\bfx})$ by first proposing a new value $\bfx^*$ from the proposed transition $q(\bfx^* \mid \bfx)$ at the current state $\bfx$ that is to be randomly accepted with probability $\alpha(\bfx^* \mid \bfx)$. If $\bfx^*$ is accepted, we make $\bftildex = \bfx^*$, otherwise we take $\bftildex = \bfx$.
+
+In the context of Bayesian inference, the target invariant distribution is the posteriori $\pi(\bfx) = p(\bftheta \mid \bfy)$ with $\mathcal{X} = \Theta$ and the acceptance probability simplifies to
+
+$$\alpha(\bfthetatilde\mid \bftheta) = \left\{ 1, \ \frac{p(\bfy \mid \bftheta)p(\bftheta)q(\bfthetatilde\mid \bftheta)}{p(\bfy \mid \bfthetatilde)p(\bfthetatilde) q(\bftheta \mid \bfthetatilde)} \right\}.$$
+
+Pseudocode for the implementation of a Metropolis Hastings transition probability in the context of Bayesian inference is presented in Algorithm \ref{algo:MH}. Assuming that the Markov chain is ergodic, the process $\hat{\Theta} := \{\bftheta_{(i)}: \ i = 1, \ldots, M\}$ in Algorithm \ref{algo:MH} provides an (approximate) Monte Carlo sample from $p(\bftheta \mid \bfy)$. See for example \cite{robert2013} for details. Averages over $\hat{\Theta}$ provide the desired approximation of integrals with respect to the target $p(\bftheta\mid \bfy)$.\\
+
+\begin{algorithm}[H]
+\SetAlgoLined
+ Initialize $\bfx(1) \sim \pi_0(\bftheta)$\;
+ Choose the proposal $q(\bfthetatilde \mid \bftheta)$ (irreducible and aperiodic)\;
+ \For{$(i \leq M)$}{
+  Propose $\bfthetatilde \sim q(\bfthetatilde \mid \bftheta_{(i)})$\;
+  Calculate $\alpha(\bfthetatilde, \bftheta_{(i)}) = \left\{ 1, \ \frac{p(\bfy \mid \bftheta)p(\bftheta)q(\bfthetatilde\mid \bftheta)}{p(\bfy \mid \bfthetatilde)p(\bfthetatilde) q(\bftheta \mid \bfthetatilde)} \right\}$\;
+  Sample $u_{(i)} \sim Unif(0,1)$\;
+  \eIf{ $u_{(i)}  \leq \alpha(\bfthetatilde \mid \bftheta)$}{
+   $\bftheta_{(i+1)} \leftarrow \bfthetatilde$\;}
+   {$\bftheta_{(i+1)} \leftarrow \bftheta_{(i)}$\;}
+  }
+ \caption{Metropolis Hastings algorithm for posterior samples}
+ \label{algo:MH}
+\end{algorithm}
+
+\vspace{2 cm} 
+
+Possible choices for the proposal $q(\bfthetatilde \mid \bftheta)$ are
+
+\begin{enumerate}
+\item Independent proposal: $q(\bfthetatilde \mid \bftheta) = q(\bfthetatilde) \ \forall \ \bftheta, \tilde{\bftheta} \in \Theta$. The independent proposal does not depend on the current state of the chain. The closer $q(\bfthetatilde)$ is from $p(\bfthetatilde \mid \bfy)$, the higher the chance of accepting proposed values which defines a better mixing Markov chain.\\
+\item Random walk proposal: $q(\bfthetatilde \mid \bftheta) = q(\bftheta \mid \bfthetatilde)$, for example $ q(\tilde{\bftheta} \mid \bftheta) = N(\bfthetatilde \mid \bftheta, \bfV)$ for the tunning covariance matrix $\bfV$. Typically, we take $\bfV=\mbox{diag}(v^2_1, \ldots, v^2_d)$ to be a diagonal matrix. We propose a new value centered on the current one.  For component $k$, if $v^2_k$ is too big, then the proposal is too erratic, leading to a low acceptance probability. On the other hand, for values of $v^2_k$ too small we get a chain with very high acceptance, but moving too slowly in each iteration, i.e. a slowly mixing Markov chain. Therefore, some tunning of $v^2_k$ is usually necessary.
+\end{enumerate}
+
+Under both proposals, a sufficient condition for an irreducible and aperiodic chain $p$ is $P_{q}(\tilde{\bftheta} \in A \mid \bftheta) > 0 \ \ \forall A\subset \Theta$ measurable (meaning that $q$ allows the chain to move to any measurable set within the support $\Theta$ within a single move). In conclusion, the resulting Marokv chain will be ergodic and will converge to the posterior distribution.
+
+\subsection{Gibbs sampler}
+\label{sec:gibbs}
+
+Consider $\bfx = (x_1, \ldots, x_d) \in \mathbb{R}^d$ and the target distribution $\pi(\bfx)$ again analytically available up to an unknown multiplicative normalization constant. The Gibbs sampler operates by sequentially sampling from the full conditional distributions $\pi(x_k \mid \bfx_{-k}), \ k = 1, \ldots, d$, as stated in algorithm \ref{algo:gibbs} where the target is, again, the posterior distribution: $\pi(\bfx) = p(\bftheta \mid \bfy)$.
+
+\begin{algorithm}[H]
+\SetAlgoLined
+ Initialize $\bftheta^{(1)} \sim \pi_0(\bftheta)$\;
+ \For{$(i \leq M)$}{
+ Sample component 1: $\theta^{(i+1)}_1 \sim p(\theta_1 \mid \bfy, \theta^{(i)}_2, \ldots, \theta^{(i)}_d)$\;
+ Sample component 2: $\theta^{(i+1)}_2 \sim p(\theta_2 \mid \bfy, \theta^{(i+1)}_1, \theta^{(i)}_3, \ldots, \theta^{(i)}_d)$\;
+ $\ \ \ \vdots$\\
+ Sample component d: $\theta^{(i+1)}_d \sim p(\theta_d \mid \bfy, \theta^{(i+1)}_1, \ldots, \theta^{(i+1)}_{d-1})$\; 
+  }
+ \caption{Gibbs sampling algorithm for posterior samples}
+ \label{algo:gibbs}
+ 
+\end{algorithm}
+ 
+
+\subsection{Reversible jumps and variable dimensions}
+
+Many BNP models involve parameter vectors of variable dimension. In order to accomodate for this, it is common to extend the Metropolis-Hastings algorithm to propose transdimensional moves using a reversible jump MCMC \citep{green1995}. In this section, we provide a brief summary of reversible jump MCMC (RJMCMC). More details and examples are available in \cite{green1995} and \cite{richardson1997}.
+
+In the following discussion, let $\bfx$ denote the parameter vector. The target distribution is denoted by $\pi(\bfx)$ for transdimensional $\bfx \in \cup_{n\in \mathbb{N}}\mathbb{R}^n$. The target distribution restricted to $\mathbb{R}^n$ is denoted by $\pi_n(\bfx_n)$ and it has density $f_{n}(\bfx_n)$. We start defining up and down moves that will respectively increase or decrease the dimensionality of the parameter. As always in a Markov chain, transition probabilities are allowed to depend on the current state; for example, down moves in a mixture model could be proposed by selecting which pair of the current components (clusters) to merge. For a state $\bfx\in \mathbb{R}^{n}$, the list of all (finite) possible up and down moves are $M_u(\bfx) = \{u_1(\bfx), \ldots, u_{n_x}(\bfx)\}$ and $M_d(\bfx)=\{ d_1(\bfx), \ldots , d_{n_x}(\bfx)\}$ respectively. We will denote $M(\bfx)=M_d(\bfx) \cup M_u(\bfx)$. Finally, let $q_{m}(\bfx)$ be the probability of using the transition probability $m\in M(\bfx)$ when the current state is $\bfx$.
+
+Furthermore, suppose all up moves $u \in M_u(\bfx)$ from any state $\bfx$ to a state $\bfy$ are obtained by sampling auxiliary variables $\bfv \sim q_{aux}(\bfv)$ and then applying the deterministic invertible transformation $y=T_u(\bfx, \bfv)$. Notice that given the current state $\bfx$ and the up move $u$, the proposed value $\bfy = T_u(\bfx, \bfv)$ is random due to the randomness of $\bfv$. On the other hand, we will assume that proposed values from down moves $d\in M(\bfy)$ are obtained deterministically, given the current state $\bfy$ and the down move $d$. One last definition: $\alpha_m(\bfx,\bfy)$ is the probability of accepting the proposed value of $\bfy$ given the transition probability $m \in M(\bfx)$ and the current state $\bfx$. Notice that $\alpha_m(\bfx,\bfy)$ depends on the auxiliary variable $\bfv$.
+
+Let $|J|=\det(\partial T/\partial \bfx \partial \bfv)$ denote the Jacobian of transformation $T$. Finally, the reversible jump MCMC uses the following acceptance probabilities for up and down moves:
+
+\begin{align*}
+\alpha_u(\bfx, \bfy) &= \min \left\{ 1, \frac{q_d(\bfy)f_{n+1}(\bfy) |J|}{  q_u(\bfx) q_{aux}(\bfv)f_{n}(\bfx) } \right\},\\
+\alpha_d(\bfy, \bfx) &= \min\left\{ 1, \frac{  q_u(\bfx) q_{aux}(\bfv)f_{n}(\bfx) }{q_d(\bfy)f_{n+1}(\bfy) |J|} \right\}=\min\left\{ 1, \frac{1}{\alpha_u(\bfx, \bfy)} \right\}.
+\end{align*}
+
+\noindent It can be shown that the defined transition probabilities satisfy the detailed balance condition.
