@@ -1,5 +1,11 @@
 \chapter{Introduction}
 
-\section{A part of the introduction}
+\section{Overview}
 
-blah blah blah
+This thesis will focus on two areas: the modeling of text and user roles in networks, and the adaptation of monotonic learning methods to algorithmic fairness.
+
+With the growth of social media, an increasing amount of new data generated occurs in a network context.  In Chapter \ref{ch:TopicBlockModel} I explore a model which combines the intuitive content description of topic modelling with the user archetyping of a stochastic blockmodel.  The combination allows us to describe contextual relationships of users (nodes) in the network and the content typical of the messages they exchange.
+
+In Chapter \ref{ch:MonoFair} I explore the concept of monotonic individual fairness.  Individual fairness \citep{dwork2012fairness} formalizes the intuitive idea similar individuals should be treated similarly.  I extend this to the idea to formalize the idea that individuals' relative treatment should follow their relative qualification.  I accomplish this by identifying non-protected attributes which should have a monotonic relationship with the outcome and enforcing that the learned prediction function maintains this monotonicity.
+
+I extend this concept in Chapter \ref{ch:SoftMonoFair} to the more realistic scenario in which monotonicity is derived from a sample of expert ratings.  This allows for more complex relationships between individuals; fairness might dictate that an increase in one attribute has a larger effect than a similar increase in another.  For example, a person a few violent felonies might considered more dangerous than a person with more non-violent misdemeanors.
