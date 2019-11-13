@@ -4,8 +4,8 @@
 \section{Overview}
     Stochastic blockmodels allow us to represent networks in terms of a latent community structure, often yielding intuitions about the underlying social structure. Typically, this structure is inferred based only on a binary network representing the presence or absence of interactions between nodes, which limits the amount of information that can be extracted from the data. In practice, many interaction networks contain much more information about the relationship between two nodes. For example, in an email network, the volume of communication between two users and the content of that communication can give us information about both the strength and the nature of their relationship.
 
-    In this paper, we propose the Topic Blockmodel,
-        \footnote{Author's note: This paper was developed concurrently and independently to Bouveyron et al. in \cite{bouveyron2018stochastic}, who develop a similar model, propose a different inference strategy, and apply it to the Enron data set as well as others.}
+    In this work, we propose the Topic Blockmodel,
+        \footnote{Author's note: This work was developed concurrently and independently to Bouveyron et al. in \cite{bouveyron2018stochastic}, who develop a similar model, propose a different inference strategy, and apply it to the Enron data set as well as others.}
     a stochastic blockmodel that uses a count-based topic model to capture the interaction modalities within and between latent communities. By explicitly incorporating information sent between nodes in our network representation, we are able to address questions of interest in real-world situations, such as predicting recipients for an email message or inferring the content of an unopened email. Further, by considering topics associated with a pair of communities, we are better able to interpret the nature of each community and the manner in which it interacts with other communities.  
     
     
@@ -31,15 +31,12 @@
 
 \section{Background}\label{sec:background}
 
-    The Topic Blockmodel presented in this paper is a stochastic blockmodel that incorporates both a count model and a topic model in its likelihood. In this section, we review both stochastic blockmodels and topic models, and discuss existing models that combine these approaches.
+    The Topic Blockmodel presented in this work is a stochastic blockmodel that incorporates both a count model and a topic model in its likelihood. In this section, we review both stochastic blockmodels and topic models, and discuss existing models that combine these approaches.
     
     \subsection{Stochastic Blockmodels}
     
-        Stochastic blockmodels \citep{Wang:Wong:1987,Snijders:Nowicki:1997} are a popular class of generative models that assume that each node within a network is associated with one of $K$ latent clusters or communities. Each pair $(k,\ell)$ of communities is associated with a latent parameter $\lambda_{k,\ell}$, which parametrizes the interactions between members of those communities. Typically, the network is assumed to be binary, and the interactions are modeled as Bernoulli random variables. In a Bayesian setting, we place conjugate (in the binary case, beta) priors on the $\lambda_{k,\ell}$, and a Dirichlet-multinomial prior on the community memberships.
-    
-        A number of variants to the basic stochastic blockmodel have been proposed. \citep{Karrer:Newman:2011} uses a gamma/Poisson link in place of a beta/Bernoulli, to obtain distributions over integer-valued networks, and also incorporates a per-node parameter that allows nodes in the same community to have different degree distribution. The Infinite Relational Model \citep{irm} allows a potentially infinite number of communities, with membership probabilities distributed according to a Dirichlet process. Rather than restrict each node to a single cluster, the Mixed Membership Stochastic Blockmodel \citep{Airoldi:Blei:Fienberg:Xing:2008} associates each node with a distribution over clusters, allowing nodes to perform several social roles.
-        
-        In this work, we adopt the Poisson links introduced by \citep{Karrer:Newman:2011} to capture the communication volume between nodes. Our model could be extended to incorporate the nonparametric and mixed membership behavior described above; however as we discuss in Section~\ref{sec:conclusion}, this would significantly increases the computational cost of the model and we leave this for future work. 
+
+        In this work, we adopt the Poisson links introduced by \citep{Karrer:Newman:2011} to capture the communication volume between nodes.  We place conjugate Beta priors on the $\lambda_{k,\ell}$, and a Dirichlet-multinomial prior on the community memberships. Our model could be extended to incorporate the nonparametric and mixed membership behavior described in \ref{sec:intro_sbm}; however as we discuss in Section~\ref{sec:conclusion}, this would significantly increases the computational cost of the model and we leave this for future work. 
     
     \subsection{Topic Models}
     
@@ -282,13 +279,13 @@
     
 \section{Discussion and Future Work}\label{sec:conclusion}
     
-    In this paper we introduced a unified network and topic model, the Topic Blockmodel. Inspired by existing stand-alone network and topic models, the Topic Blockmodel can be used to identify and label communities in a network and make predictions about interactions. %In human-generated data, the model performs better than existing methods at prediction of heldout message information and attribution of messages.
+    In this work we introduced a unified network and topic model, the Topic Blockmodel. Inspired by existing stand-alone network and topic models, the Topic Blockmodel can be used to identify and label communities in a network and make predictions about interactions. %In human-generated data, the model performs better than existing methods at prediction of heldout message information and attribution of messages.
     
     We have focused here on networks where the interactions are textual in nature. However, we may also have networks where interactions take the form of images, audio, or some combination of media. A future research direction might be to explore augmenting this model with other forms of media to better make use of information shared across the network, using likelihoods such as those described in \citep{cao2007spatially}, \citep{niu2012context} or \citep{kim2009acoustic}.
     
     Other extensions could be obtained by using a richer distribution over the community structure. We chose a simple, parametric model with single-community membership to allow for straightforward computation; however the potential for mixed-membership or nonparametric versions is clear. Another interesting avenue for research is to make the distribution over communities explicitly dependent on some set of covariates such as time of email or geographical location of nodes, creating a dynamic model.
 
-    One limitation of the stochastic blockmodel framework is that it is only appropriate when our network is dense -- that is, when the number of non-zero edges grows quadratically with the number of nodes. This is a reasonable assumption in relatively small networks where it is likely that all nodes have had a chance to interact with each other -- for example, groups of individuals within a school, company or organization. This is the setting we have explored in this paper.
+    One limitation of the stochastic blockmodel framework is that it is only appropriate when our network is dense -- that is, when the number of non-zero edges grows quadratically with the number of nodes. This is a reasonable assumption in relatively small networks where it is likely that all nodes have had a chance to interact with each other -- for example, groups of individuals within a school, company or organization, as we have explored in this work.
     
     An interesting parallel line of research, which we are currently exploring, is models for text-based interaction in \textit{sparse} data. Such a model would require replacing the stochastic blockmodel component of the model with a distribution appropriate for sparse graphs, such as those described by \citep{Caron:Fox:2014}, \citep{Veitch:Roy:2015}, \citep{Cai:Campbell:Broderick:2016}, \citep{Crane:Dempsey:2016} and \citep{williamson2016nonparametric}. Without such a significant change to the model, one possible direction would be to add node-specific degree-correcting parameters as proposed by \citep{Karrer:Newman:2011}.
 
