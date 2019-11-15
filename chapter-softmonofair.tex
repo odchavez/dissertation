@@ -3,47 +3,98 @@
 
 \section{Overview}
 
-    Monotonicity as discussed in Chapter \ref{ch:MonoFair} requires that individual attributes can be assigned a monotonic relationship with the outcome, but does not account for intuitive monotonicity which might occur across combinations of attributes.  
+    Monotonicity as discussed in Chapter \ref{ch:MonoFair} requires that individual attributes can be assigned a monotonic relationship with the outcome, but does not account for intuitive monotonicity which might occur across combinations of attributes.  For instance, consider the situation where two defendants are otherwise identical except that the first has committed ten more felonies and the second has committed one more misdemeanor; clearly, the first should be ranked as more likely to re-offend, but the two are incomparable according to these strict monotonicity rules.  
+    
+    In addition, such strict interpretation of monotonicity prevents comparison between individuals with non-identical covariates on non-monotonic axes.  For example, if two defendants are 30 and 31 years old, they are incomparable regardless of their other records.
+    
+    This section explores a methodology for eliciting such non-axial monotonicity based on surveying arbiters, which may or may not be fair in their judgments, and using those responses to regularize a classifier.  The input of the arbiters is motivated as preventing intuitive resentment. 
 
-\section{Background}\label{sec:softmono_bg}
+% \section{Background}\label{sec:softmono_bg}
     
-    We assume that the reader is familiar with the definitions and concepts in Sections \ref{sec:monofair_intro} and \ref{sec:monofair_background}.
+%     We assume that the reader is familiar with the definitions and concepts in Sections \ref{sec:monofair_intro} and \ref{sec:monofair_background}.  We wish to extend 
     
-    Topics to cover:
-    \begin{itemize}
-        \item Survey methodologies for eliciting rankings
-        \item Learning ranking functions
-        \item Recent ML fairness works that deal with elicited fairness
-    \end{itemize}
+%     Topics to cover:
+%     \begin{itemize}
+%         \item Survey methodologies for eliciting rankings
+%         \item Learning ranking functions
+%         \item Recent ML fairness works that deal with elicited fairness
+%     \end{itemize}
     
-    \subsection{Eliciting relationships}
+%     \subsection{Eliciting relationships}
     
-    \subsection{Preference Learning}
+%     \subsection{Preference Learning}
     
-    \subsection{Recent relevant works}
+%     \subsection{Recent relevant works}
     
 \section{Model}\label{sec:softmono_model}
 
-    TBD
+    Let $X^{obs}$, $Y^{obs}$, and $A^{obs}$ be the non-protected attributes, observed binary outcomes $\in \{0, 1\}$, and protected attributes for some set of $n$ individuals.  Using $i, j \in {1 \ldots n}^2$, we can construct pairings from the observed data, and we introduce an auxiliary variable,
+    $$ Z_{ij}^{obs} = \left\{ \begin{array}{l c l}
+        1 & \mbox{if} & Y_i^{obs} = 1 \mbox{~and~} Y_j^{obs} = 0 \\
+        2 & \mbox{if} & Y_i^{obs} = 0 \mbox{~and~} Y_j^{obs} = 1 \\
+        3 & \mbox{if} & Y_i^{obs} = Y_j^{obs}
+    \end{array}\right. .$$
+    
+    The crux of this model is moving from optimizing for the direct prediction of outcomes encompassed by $Y$ to optimizing the relative outcomes encompassed by $Z$.  Similarly, when codifying our survey results When we survey our fairness arbiters, we ask them to evaluate whether one individual is more likely ($Z = 1$), less likely ($Z = 2$) or similarly likely ($Z = 3$) than another specific individual to have $Y = 1$.
+    
+    We can then define a single loss function which incorporates both data sources:
+    $$ \mathcal{L}_Z = \sum\limits_{i, j \in \mathcal{O} + \mathcal{S}} \left(\begin{array}{l} 
+        \mathbf{1}_{Z_{ij} = 1} ~ \hat{p}_i (1 - \hat{p}_j) ~ + \\
+        \mathbf{1}_{Z_{ij} = 2} ~ (1 - \hat{p}_i) \hat{p}_j ~ + \\
+        \mathbf{1}_{Z_{ij} = 3} ~ \left(\hat{p}_i \hat{p}_j + (1 - \hat{p}_i)(1 - \hat{p}_j) \right)
+    \end{array}\right), \label{eq:sm_pairwise_loss}$$
+    
+    letting $\mathcal{O}$ denote the set of observed pairs and $\mathcal{S}$ denote the set of surveyed pairs.  Note that the $\mathcal{S}$ may be either the whole set $\{1 \ldots N\}^2$ or a sample of the set.  $\mathcal{O} \cap \mathcal{S} = \mathcal{S}$ if $\mathcal{O}$ is the whole space, and may be a subset or empty set if $\mathcal{O}$ is a sample of the pairwise comparisons.
 
 \section{Experiments}\label{sec:softmono_experiments}
 
+    We demonstrate the use of the above pairwise loss on two datasets.  First, we consider a synthetic experiment where the true probability $\Pr(Y_i = 1 | X_i)$ is known and we attempt to recover that probability using a simple feedforward neural network, as described in Sections \ref{sec:intro_nns} and \ref{sec:monofair_experiments}, trained to minimize \ref{eq:sm_pairwise_loss}.  Second, we consider the COMPAS dataset, and utilize human survey responses and attempt to learn a network with a conditional prediction structure which allows for post-hoc compromise between fairness loss and prediction accuracy.
+    
     \subsection{Synthetic}
         \begin{itemize}
-            \item Barplot showing cross entropy loss matches
-            \item Scatter plot of synthetic vs real $\hat{p}$
+            \item $X_i \sim N(0, 1)^3$
+            \item $\beta \sim N(0, 1)^3$
+            \item $P = 1 / (1 + \exp{-XB})$
+            \item $Y_i \sim \mbox{Bernoulli}(P_i)$
+            \item Optimize for Eq. \ref{eq:sm_pairwise_loss}, evaluate cross entropy
+            \item Optimize for cross entropy, compare with CE from pairwise optimization
+            \item Scatter plot of $p_i$ vs real $\hat{p}_i$
         \end{itemize}
-        
+    
     \subsection{COMPAS}
     
+        We augment the COMPAS dataset described in Section \ref{sec:monofair_datasets} in two ways: we add a feature for whether the current charge is violent, and we collect survey data to on random pairs and the possible ordering of their outcomes.
+        
+        The first augmentation was made by survey.  Five volunteers were each presented 100 independent random pairings of non-protected attributes, labeled ``Individual A" and ``Individual B", and asked to provide one of four ratings:
         \begin{itemize}
-            \item Barplots similar to previously shared
-            \item Tradeoff chart using conditional variable for monontone and non-monotone model
+            \item ``A is at least as likely to (re)offend" ($Z = 1$)
+            \item ``B is at least as likely to (re)offend" ($Z = 2$)
+            \item ``A and B are similarly likely to (re)offend" ($Z = 3$)
+            \item ``No preference / any of the others are fair"
         \end{itemize}
-\section{Results}\label{sec:softmono_results}
-    
-    TBD
+        The full survey instructions are presented in the appendix.  Seventeen responses indicating no preference were discarded, leaving 298 dissimilar responses ($Z \in \{1, 2\}$) and 185 similar responses ($Z = 3$).
 
-\section{Discussion}\label{sec:softmono_discussion}
+        Second, in adding the feature for violence of the current charge, we utilized the classification system described by ProPublica and based on the US Department of Justice's definition of a violent crime: ``murder and nonnegligent manslaughter, forcible rape, robbery, and aggravated assault."  With this feature added, the non-protected attributes are age, (adult) priors count, juvenile prior felony count, juvenile prior misdemeanor count, juvenile prior other counts, arrest charge degree (felony or misdemeanor), and whether the arrest charge is violent.  The protected attributes are race, classified as Caucasian, African American, or Other (comprising what the dataset labels as Other, Hispanic, Native American, and Asian), and Sex, classified as Male or Female.
+        
+        We feed the neural network an additional input: whether the data point is from the observed data or the surveyed data.  This design allows us to a tune a prediction continuously from being based entirely on real data without concern for agreeing with intuitive resentment and being based entirely on the survey data at the expense of predictive accuracy.
+        
+        For fairness loss, we chose to evaluate equality of odds, which requires that the prediction is independent of the protected attributes conditioned on the true outcome, i.e.
+        $$ \Pr(\hat{Y} = 1 | A = a, Y = y) = \Pr(\hat{Y} = 1 | A = a', Y = y) \forall a, a', y .$$
+        
+        We express this is a differentiable loss as 
+        $$
+            \mathcal{L}_F = \sum\limits_{y} \sum\limits_{a} \left( \bar{\hat{y}}_{ay} - \bar{\hat{y}}_{\cdot y} \right)^2
+        $$
+        where $\bar{\hat{y}}_{ay} = \sum_{i: A_i = a, Y_i = y}(\hat{Y}_i) / n_{ay}$, i.e. the average prediction individuals of each protected attribute set and true outcome, and $\bar{\hat{y}}_{\cdot y} = \sum_{i: Y_i = y}(\hat{Y}_i) / n_{\cdot y}$, i.e. the average prediction for individuals of that true outcome.
+        
+        
+% \section{Results}\label{sec:softmono_results}
     
-    TBD
+%         \begin{itemize}
+%             \item Barplots similar to previously shared
+%             \item Tradeoff chart using conditional variable for monontone and non-monotone model
+%         \end{itemize}
+
+% \section{Discussion}\label{sec:softmono_discussion}
+    
+%     TBD
