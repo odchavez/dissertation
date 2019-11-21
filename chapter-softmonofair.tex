@@ -9,9 +9,11 @@
     
     This section explores a methodology for eliciting such non-axial monotonicity based on surveying arbiters, which may or may not be fair in their judgments, and using those responses to regularize a classifier.  The input of the arbiters is motivated as preventing intuitive resentment. 
 
-% \section{Background}\label{sec:softmono_bg}
+\section{Background}\label{sec:softmono_bg}
     
-%     We assume that the reader is familiar with the definitions and concepts in Sections \ref{sec:monofair_intro} and \ref{sec:monofair_background}.  We wish to extend 
+    We assume that the reader is familiar with the definitions and concepts in Sections \ref{sec:monofair_intro} and \ref{sec:monofair_background}.  We wish to extend the concept of \emph{non-protected attribute resentment} (Def. \ref{def:ScoreResentment}) to widen the comparisons which can be made when defining what is a ``better" $X_u$.
+    
+    Learning a ranking function over the space of $\mathcal{X}$ is a well trodden problem...
     
 %     Topics to cover:
 %     \begin{itemize}
@@ -48,19 +50,41 @@
 
 \section{Experiments}\label{sec:softmono_experiments}
 
-    We demonstrate the use of the above pairwise loss on two datasets.  First, we consider a synthetic experiment where the true probability $\Pr(Y_i = 1 | X_i)$ is known and we attempt to recover that probability using a simple feedforward neural network, as described in Sections \ref{sec:intro_nns} and \ref{sec:monofair_experiments}, trained to minimize \ref{eq:sm_pairwise_loss}.  Second, we consider the COMPAS dataset, and utilize human survey responses and attempt to learn a network with a conditional prediction structure which allows for post-hoc compromise between fairness loss and prediction accuracy.
+    We demonstrate the use of the above pairwise loss on two datasets.  First, we consider a synthetic experiment where the true probability $\Pr(Y_i = 1 | X_i)$ is known and we attempt to recover that probability using a simple feedforward neural network, as described in Sections \ref{sec:intro_nns} and \ref{sec:monofair_experiments}, trained to minimize \ref{eq:sm_pairwise_loss}.  
     
-    \subsection{Synthetic}
-        \begin{itemize}
-            \item $X_i \sim N(0, 1)^3$
-            \item $\beta \sim N(0, 1)^3$
-            \item $P = 1 / (1 + \exp{-XB})$
-            \item $Y_i \sim \mbox{Bernoulli}(P_i)$
-            \item Optimize for Eq. \ref{eq:sm_pairwise_loss}, evaluate cross entropy
-            \item Optimize for cross entropy, compare with CE from pairwise optimization
-            \item Scatter plot of $p_i$ vs real $\hat{p}_i$
-        \end{itemize}
+    Second, we consider the COMPAS dataset, and utilize human survey responses and attempt to learn a network with a conditional prediction structure which allows for post-hoc compromise between fairness loss and prediction accuracy.  We set $X_{c}$ to 0 when using pairs from observed data and to 1 when using pairs from surveyed data.
+
+    \subsection{Synthetic - Proof of balancing objectives}
     
+        We begin with a synthetic experiment where the ground truth.  We have an individual set of attributes $X_i \sim N(0, 1)^2$, and two weight vectors,  $\beta_{obs} = [0.9, 1.1]$ and $\beta_{sur} = [1.1, 0.9]$, which describe the relationship between $X$ and,respectively,  $Z_{ij}^{obs}$ (via $Y_{i}^{obs}$) and $Z_{ij}^{sur}$.  We set $P_i^{obs} = 1 / (1 + \exp{-X_i \beta^{obs} - 1})$, sample $Y_i \sim \mbox{Bernoulli}(P_i^{obs})$, and set $Z_{ij}^{obs}$ as defined as above.  We set $Z_{ij}^{sur}$ according to:
+            $$ Z_{ij}^{sur} = \left\{ \begin{array}{lll}
+                    1 & \mbox{if} & X_{i}\beta^{sur} > X_{j}\beta^{sur} + 0.25\\
+                    2 & \mbox{if} & X_{j}\beta^{sur} > X_{i}\beta^{sur} + 0.25 \\
+                    3 & \mbox{if} & | X_{i}\beta^{sur} - X_{j}\beta^{sur} | < 0.25
+                \end{array} \right. .$$
+        We sample 1,000 training examples of $Z_{ij}^{obs}$ and 200 examples of $Z_{ij}^{sur}$, and evaluate losses on the same number identically distributed held out samples.  We trained using a small neural network of three hidden layes of width three and a $\tanh$ activation function.
+        
+        First, we wish to establish that the pairwise loss defined above is competent to estimate the probability function underlying probability function when $X_c = 0$ i.e. when attempting to predict based purely on the observed outcomes via the $Z_{ij}$ pairs.  In Figure \ref{fig:sm_synthetic_p_fit}, we show experimentally that $\hat{P}_i$ is accurate to within the limit of sampling error and (intentional) model misspecification.
+        
+        \begin{figure}
+            \centering
+            \includegraphics{fig_softmono/synthetic_p_fit.png}
+            \caption{The model estimated probability of $\Pr(Y_i = 1 | X_i, X_c = 0)$ versus the ground truth probabilities, with 1:1 line.}
+            \label{fig:sm_synthetic_p_fit}
+        \end{figure}
+        
+        Second, we wish to assess whether the model is able to interpolate via $X_c$ between it's dual goals of predicting $\hat{Y}_i$ while adhering to the surveyed $Z_{ij}^{sur}$ pairs.  The trend of $Z_{ij}^{sur}$ is exactly as expected; lowest when $X_c = 0$ and gradually increasing to a maximum when $X_c = 1$.  The behavior of $Z_{ij}^{sur}$ is less intuitive; it is highest when $X_c = 0$, but many random fits have an local minimum loss with $X_c < 1$.  This is explained by the relatively small sample ($n^{sur} = 200$) leading to overfitting even in this modest network, and by $\mathcal{L}_Z^{obs}$ providing regularization which improves out-of-sample performance.  We also, when examining the joint loss values available, that the models fits form appropriate trade off functions for performance, with reduction of one loss coming at the cost of increase of the other. 
+        
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.45\textwidth]{fig_softmono/synthetic_loss.png}
+            \includegraphics[width=0.45\textwidth]{fig_softmono/synthetic_loss_tradeoff.png}
+            \caption{
+                Model losses as a function of conditional variable ($X_c$) setting over 5 experiments with random initializations.  Left: losses as a function of $X_c$, with $\mathcal{L}_Z^{obs}$ in blue and $\mathcal{L}_Z^{sur}$ in red.  Right: parametric plot of $\mathcal{L}_Z^{sur}$ as a function of $\mathcal{L}_Z^{obs}$.
+            }
+            \label{fig:sm_synthetic_losses}
+        \end{figure}
+        
     \subsection{COMPAS}
     
         We augment the COMPAS dataset described in Section \ref{sec:monofair_datasets} in two ways: we add a feature for whether the current charge is violent, and we collect survey data to on random pairs and the possible ordering of their outcomes.
@@ -87,13 +111,50 @@
         $$
         where $\bar{\hat{y}}_{ay} = \sum_{i: A_i = a, Y_i = y}(\hat{Y}_i) / n_{ay}$, i.e. the average prediction individuals of each protected attribute set and true outcome, and $\bar{\hat{y}}_{\cdot y} = \sum_{i: Y_i = y}(\hat{Y}_i) / n_{\cdot y}$, i.e. the average prediction for individuals of that true outcome.
         
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth]{fig_softmono/compas_tradeoffs_fair.png}
+            \caption{Fairness-Accuracy tradeoff for fair models}
+            \label{fig:sm_compas_tradeoffs}
+        \end{figure}
         
-% \section{Results}\label{sec:softmono_results}
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth]{fig_softmono/compas_boxplot.png}
+            \caption{Boxplots of model losses based on training regime}
+            \label{fig:sm_compas_boxplots}
+        \end{figure}
+        
+        \begin{verbatim}
+        Loss  Training Objective    Loss if Cond=0   |  Loss if Cond = 1
+        ---------------------------------------------|------------------
+        L_Y   Non-mono, Non-fair    0.948 +-  0.001  |   0.965 +-  0.005
+        L_Y   Non-mono, Fair        0.958 +-  0.004  |   1.055 +-  0.004
+        L_Y   Mono, Non-fair        0.953 +-  0.002  |   0.957 +-  0.001
+        L_Y   Mono, Fair            1.007 +-  0.006  |   1.031 +-  0.000
+        L_Y   Loss_CE_Obs           0.953 +-  0.002  |   0.955 +-  0.002
+        L_Y   Loss_CE_Survey        0.989 +-  0.002  |   0.951 +-  0.001
+        
+        Loss  Training Objective    Loss if Cond=0   |  Loss if Cond = 1
+        ---------------------------------------------|------------------
+        L_F   Non-mono, Non-fair    0.019 +-  0.000  |   0.019 +-  0.001
+        L_F   Non-mono, Fair        0.013 +-  0.001  |   0.000 +-  0.000
+        L_F   Mono, Non-fair        0.019 +-  0.000  |   0.016 +-  0.000
+        L_F   Mono, Fair            0.002 +-  0.001  |   0.000 +-  0.000
+        L_F   Loss_CE_Obs           0.017 +-  0.000  |   0.017 +-  0.001
+        L_F   Loss_CE_Survey        0.011 +-  0.000  |   0.018 +-  0.000
+        
+        Loss  Training Objective    Loss if Cond=0   |  Loss if Cond = 1
+        ---------------------------------------------|------------------
+        L_CE  Non-mono, Non-fair    0.610 +-  0.000  |   0.629 +-  0.005
+        L_CE  Non-mono, Fair        0.619 +-  0.003  |   0.733 +-  0.017
+        L_CE  Mono, Non-fair        0.613 +-  0.001  |   0.618 +-  0.001
+        L_CE  Mono, Fair            0.665 +-  0.007  |   0.693 +-  0.005
+        L_CE  Loss_CE_Obs           0.612 +-  0.001  |   0.617 +-  0.002
+        L_CE  Loss_CE_Survey        0.692 +-  0.005  |   0.609 +-  0.000
+        \end{verbatim}
     
-%         \begin{itemize}
-%             \item Barplots similar to previously shared
-%             \item Tradeoff chart using conditional variable for monontone and non-monotone model
-%         \end{itemize}
+    
 
 % \section{Discussion}\label{sec:softmono_discussion}
     
