@@ -33,13 +33,17 @@
     The crux of this model is moving from optimizing for the direct prediction of outcomes encompassed by $Y$ to optimizing the relative outcomes encompassed by $Z$.  Similarly, when codifying our survey results When we survey our fairness arbiters, we ask them to evaluate whether one individual is more likely ($Z = 1$), less likely ($Z = 2$) or similarly likely ($Z = 3$) than another specific individual to have $Y = 1$.
     
     We can then define a single loss function which incorporates both data sources:
-    $$ \mathcal{L}_Z = \sum\limits_{i, j \in \mathcal{O} + \mathcal{S}} \left(\begin{array}{l} 
-        \mathbf{1}_{Z_{ij} = 1} ~ \hat{p}_i (1 - \hat{p}_j) ~ + \\
-        \mathbf{1}_{Z_{ij} = 2} ~ (1 - \hat{p}_i) \hat{p}_j ~ + \\
-        \mathbf{1}_{Z_{ij} = 3} ~ \left(\hat{p}_i \hat{p}_j + (1 - \hat{p}_i)(1 - \hat{p}_j) \right)
+    $$ \mathcal{L}_Z(Z, \hat{p}) = \sum\limits_{i, j \in \mathcal{O} + \mathcal{S}} \left(\begin{array}{l} 
+        \mathbf{1}_{Z_{ij} = 1} ~ \log\left( \hat{p}_i (1 - \hat{p}_j)  \right) ~ + \\
+        \mathbf{1}_{Z_{ij} = 2} ~ \log\left( (1 - \hat{p}_i) \hat{p}_j  \right) ~ + \\
+        \mathbf{1}_{Z_{ij} = 3} ~ \log\left(\hat{p}_i \hat{p}_j + (1 - \hat{p}_i)(1 - \hat{p}_j) \right)
     \end{array}\right), \label{eq:sm_pairwise_loss}$$
     
     letting $\mathcal{O}$ denote the set of observed pairs and $\mathcal{S}$ denote the set of surveyed pairs.  Note that the $\mathcal{S}$ may be either the whole set $\{1 \ldots N\}^2$ or a sample of the set.  $\mathcal{O} \cap \mathcal{S} = \mathcal{S}$ if $\mathcal{O}$ is the whole space, and may be a subset or empty set if $\mathcal{O}$ is a sample of the pairwise comparisons.
+    
+    In the above loss, the components for dissimilar outcomes can be reduced to the traditional log loss of the observed outcomes, i.e. if $Y_i^{obs} = 1$ and $Y_j^{sur}$ then 
+    $ \log\left( \hat{p}_i (1 - \hat{p}_j)  \right) = \log\left( \hat{p}_i \right) + \log\left(1 - \hat{p}_j  \right)$ 
+    is just the usual cross entropy loss.  For the case that $Z_ij = 3$, the loss component can be viewed as pushing $\hat{p}_i$ and  - $\hat{p}_j$ to take similar values; $\left(d \left(\hat{p}_i \hat{p}_j + (1 - \hat{p}_i)(1 - \hat{p}_j) \right)/d\hat{p_i}\right|_{\hat{p}_j} = 2\hat{p}_j - 1$, so that $\hat{p}_j$ is driven towards 0 if $\hat{p}_j < 1/2$ and towards 1 if $\hat{p}_j > 1/2$.  This is symmetric, so that if both estimates are pushed towards the same pole, with an unstable equilibrium if both are $1/2$.
 
 \section{Experiments}\label{sec:softmono_experiments}
 
@@ -55,7 +59,11 @@
                     2 & \mbox{if} & X_{j}\beta^{sur} > X_{i}\beta^{sur} + 0.25 \\
                     3 & \mbox{if} & | X_{i}\beta^{sur} - X_{j}\beta^{sur} | < 0.25
                 \end{array} \right. .$$
-        We sample 1,000 training examples of $Z_{ij}^{obs}$ and 200 examples of $Z_{ij}^{sur}$, and evaluate losses on the same number identically distributed held out samples.  We trained using a small neural network of three hidden layes of width three and a $\tanh$ activation function.
+        We sample 1,000 training examples of $Z_{ij}^{obs}$ and 200 examples of $Z_{ij}^{sur}$, and evaluate losses on the same number identically distributed held out samples.  We trained using a small neural network of three hidden layers of width three and a $\tanh$ activation function. We optimize for a compound loss,
+            $$\mathcal{L} = \underbrace{\mathcal{L}_Z\left(Z_{ij}^{obs}, \hat{p}_i = f(X_i, X_c = 0)\right)}_{\mathcal{L}_Z^{obs}}
+                          + \underbrace{\mathcal{L}_Z\left(Z_{ij}^{sur}, \hat{p}_i = f(X_i, X_c = 1)\right)}_{\mathcal{L}_Z^{sur}} 
+                          + g(\theta)$$
+        where $g(\theta)$ is a regularization term on the parameters of the network.  We arbitrarily set $g(\theta) = 0.01 * \left(||\theta||_1 + ||\theta||_2^2\right)$.
         
         First, we wish to establish that the pairwise loss defined above is competent to estimate the probability function underlying probability function when $X_c = 0$ i.e. when attempting to predict based purely on the observed outcomes via the $Z_{ij}$ pairs.  In Figure \ref{fig:sm_synthetic_p_fit}, we show experimentally that $\hat{P}_i$ is accurate to within the limit of sampling error and (intentional) model misspecification.
         
@@ -102,23 +110,31 @@
         $$
             \mathcal{L}_F = \sum\limits_{y} \sum\limits_{a} \left( \bar{\hat{y}}_{ay} - \bar{\hat{y}}_{\cdot y} \right)^2
         $$
-        where $\bar{\hat{y}}_{ay} = \sum_{i: A_i = a, Y_i = y}(\hat{Y}_i) / n_{ay}$, i.e. the average prediction individuals of each protected attribute set and true outcome, and $\bar{\hat{y}}_{\cdot y} = \sum_{i: Y_i = y}(\hat{Y}_i) / n_{\cdot y}$, i.e. the average prediction for individuals of that true outcome.
+        where $\bar{\hat{y}}_{ay} = \sum_{i: A_i = a, Y_i = y}(\hat{Y}_i) / n_{ay}$, i.e. the average prediction individuals of each protected attribute set and true outcome, and $\bar{\hat{y}}_{\cdot y} = \sum_{i: Y_i = y}(\hat{Y}_i) / n_{\cdot y}$, i.e. the average prediction for individuals of that true outcome.  We then set our training loss, using the notation from the synthetic experiment above, as
+            % $$\mathcal{L} = \underbrace{\mathcal{L}_Z\left(Z_{ij}^{obs}, f(X_i, X_c = 0)\right)}_{\mathcal{L}_Z^{obs}}
+            %               + \underbrace{\mathcal{L}_Z\left(Z_{ij}^{sur}, f(X_i, X_c = 1)\right)}_{\mathcal{L}_Z^{sur}} 
+            %               + \underbrace{\sum\limits_{y \in \{0, 1\}} \sum\limits_{a \in \mathcal{A}} \left( \bar{\hat{y}}_{ay} - \bar{\hat{y}}_{\cdot y} \right)^2}_{\mathcal{L}_F} 
+            %               + g(\theta).$$
+            $$\mathcal{L} = \mathcal{L}_Z^{obs}
+                          + \mathcal{L}_Z^{sur}
+                          + \mathcal{L}_F
+                          + g(\theta).$$
+        
+        Due to the increased data set size and complexity, we use a larger network in this problem with 4 hidden layers each of size 10.  As long as we assume that axial monotonicity as discussed in Chapter \ref{ch:MonoFar} applies, we can train the present network using either a traditional feedforward neural network or the monotonic neural previously discussed; we present results from both.
+        
+        % We see in Figure \ref{fig:sm_compas_tradeoffs} that...
         
         \begin{figure}
             \centering
             \includegraphics[width=\textwidth]{fig_softmono/compas_tradeoffs_fair.png}
-            \caption{Fairness-Accuracy tradeoff for fair models}
+            \caption{Fairness-Accuracy tradeoff for fair models on COMPAS data}
             \label{fig:sm_compas_tradeoffs}
         \end{figure}
         
         \begin{figure}
             \centering
             \includegraphics[width=\textwidth]{fig_softmono/compas_boxplot.png}
-            \caption{Boxplots of model losses based on training regime}
+            \caption{Boxplots of model losses on COMPAS data}
             \label{fig:sm_compas_boxplots}
         \end{figure}
         
-
-% \section{Discussion}\label{sec:softmono_discussion}
-    
-%     TBD
