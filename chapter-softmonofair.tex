@@ -1,5 +1,4 @@
-\chapter{Elicited Monotonic Fairness}
-\label{ch:SoftMonoFair}
+\chapter{Elicited Monotonic Fairness} \label{ch:SoftMonoFair}
 
 \section{Overview}
 
@@ -13,21 +12,15 @@
     
     We assume that the reader is familiar with the definitions and concepts in Sections \ref{sec:monofair_intro} and \ref{sec:monofair_background}.  We wish to extend the concept of \emph{non-protected attribute resentment} (Def. \ref{def:ScoreResentment}) to widen the comparisons which can be made when defining what is a ``better" $X_u$.
     
-    Learning a ranking function over the space of $\mathcal{X}$ is a well trodden problem...
+    At its core, the problem to be addressed is that an individual will have resentment toward others if the individual feels the others received better treatment despite not being as deserving.  Modeling each individual's views on relative treatment would be undesirable since we would like a rule which applies evenly to all individuals; we instead aim to learn a ranking function over individuals which can be used universally.  
     
-%     Topics to cover:
-%     \begin{itemize}
-%         \item Survey methodologies for eliciting rankings
-%         \item Learning ranking functions
-%         \item Recent ML fairness works that deal with elicited fairness
-%     \end{itemize}
+    We propose to learn such a function by querying a set of arbiters by presenting pairs of non-protected attribute sets and asking for a judgment as to what the fair relative treatment of the pair would be. Once collected, these sample can be used to learn a \emph{preference function} over pairs of non-protected attributes which can be used to regularize the prediction function to prevent individual resentment while still providing accurate prediction that, optionally, also protects against group-level unfairness.
+
+    This is not the first work to incorporate the idea of utilizing arbiter queries in the area of fairness.  The original definition of individual fairness given by Dwork \cite{dwork2012fairness} requires specificying a distance metric over attributes which can bound the difference in treatment, i.e. $D\left(f(X_i), f(X_j)\right) \le \kappa d(X_i, X_j)$.  Ilvento\cite{ilvento2019metric} and other recent works \cite{jung2019eliciting,lahoti2019operationalizing,wang2019empirical} approach the problem of operationalizing an individual fairness distance metric by polling arbiters on which pairs of individuals can be considered similar.  Wang et al.\cite{wang2019empirical} similarly collect actual survey data and evaluate a variety of models to interpret such data.  None of these approaches tackle the problem of dissimilar treatment, i.e. when an arbiter decides that two individuals should receive different predictions, especially the asymmetric case when arbiters indicate that one individual should receive a specifically more favorable or less favorable outcome than the other.
     
-%     \subsection{Eliciting relationships}
+    Models which are designed to identify the relative values of pairs can generally be classified as preference learning models\cite{peters2018scalable} \guy{Flesh this out.}
     
-%     \subsection{Preference Learning}
-    
-%     \subsection{Recent relevant works}
-    
+
 \section{Model}\label{sec:softmono_model}
 
     Let $X^{obs}$, $Y^{obs}$, and $A^{obs}$ be the non-protected attributes, observed binary outcomes $\in \{0, 1\}$, and protected attributes for some set of $n$ individuals.  Using $i, j \in {1 \ldots n}^2$, we can construct pairings from the observed data, and we introduce an auxiliary variable,
@@ -125,36 +118,6 @@
             \label{fig:sm_compas_boxplots}
         \end{figure}
         
-        \begin{verbatim}
-        Loss  Training Objective    Loss if Cond=0   |  Loss if Cond = 1
-        ---------------------------------------------|------------------
-        L_Y   Non-mono, Non-fair    0.948 +-  0.001  |   0.965 +-  0.005
-        L_Y   Non-mono, Fair        0.958 +-  0.004  |   1.055 +-  0.004
-        L_Y   Mono, Non-fair        0.953 +-  0.002  |   0.957 +-  0.001
-        L_Y   Mono, Fair            1.007 +-  0.006  |   1.031 +-  0.000
-        L_Y   Loss_CE_Obs           0.953 +-  0.002  |   0.955 +-  0.002
-        L_Y   Loss_CE_Survey        0.989 +-  0.002  |   0.951 +-  0.001
-        
-        Loss  Training Objective    Loss if Cond=0   |  Loss if Cond = 1
-        ---------------------------------------------|------------------
-        L_F   Non-mono, Non-fair    0.019 +-  0.000  |   0.019 +-  0.001
-        L_F   Non-mono, Fair        0.013 +-  0.001  |   0.000 +-  0.000
-        L_F   Mono, Non-fair        0.019 +-  0.000  |   0.016 +-  0.000
-        L_F   Mono, Fair            0.002 +-  0.001  |   0.000 +-  0.000
-        L_F   Loss_CE_Obs           0.017 +-  0.000  |   0.017 +-  0.001
-        L_F   Loss_CE_Survey        0.011 +-  0.000  |   0.018 +-  0.000
-        
-        Loss  Training Objective    Loss if Cond=0   |  Loss if Cond = 1
-        ---------------------------------------------|------------------
-        L_CE  Non-mono, Non-fair    0.610 +-  0.000  |   0.629 +-  0.005
-        L_CE  Non-mono, Fair        0.619 +-  0.003  |   0.733 +-  0.017
-        L_CE  Mono, Non-fair        0.613 +-  0.001  |   0.618 +-  0.001
-        L_CE  Mono, Fair            0.665 +-  0.007  |   0.693 +-  0.005
-        L_CE  Loss_CE_Obs           0.612 +-  0.001  |   0.617 +-  0.002
-        L_CE  Loss_CE_Survey        0.692 +-  0.005  |   0.609 +-  0.000
-        \end{verbatim}
-    
-    
 
 % \section{Discussion}\label{sec:softmono_discussion}
     
