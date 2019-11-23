@@ -61,4 +61,7 @@ I extend this concept in Chapter \ref{ch:SoftMonoFair} to the more realistic sce
         
         Conversely, \emph{group fairness} metrics aim to minimize population-level imbalances. For example, the notion of demographic parity \citep{dwork2012fairness} requires that the predicted outcome $\hat{Y}$ is independent of the protected variable $A$. Equalized odds \citep{HarPriSre2016} requires that the predicted outcome $\hat{Y}$ is independent of $A$ conditioned on the true outcome $Y$, allowing a predictor to depend on $A$ via $Y$. Equalized opportunity \citep{HarPriSre2016} relaxes this condition in a classification task where the outcome $\hat{Y}=1$ is seen as more desirable than $\hat{Y}=0$, to require conditional independence between predictor $\hat{Y}$ and protected variable $\hat{A}$ only when $Y=1$. \cite{AgaBeyDudLanWal2018} show that demographic parity, equalized odds, and their variants can be expressed in terms of a set of linear constraints.  In many cases, individual notions of fairness are at odds with group notions of fairness. For example, \cite{dwork2012fairness} shows that individually fair functions achieve perfect demographic parity if and only if the distribution over individuals is similar across demographic groups.
 
+    % \subsection{Fair Methods}
+        
+    %     \guy{TODO}
 
