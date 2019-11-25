@@ -1,19 +1,9 @@
 \chapter{Conclusion}
 
-% This thesis will focus on relational learning in two areas: the modeling of text and user roles in networks, and the relative treatment of individuals as related to algorithmic fairness.  
-
-% The exponential growth of computers' influence in lives has been driven not be individual computers but by their networks, and more so by the possibilities of the combinatorial interactions of the users of those networks.  The users increasingly base their lives on computer networks, from mundane economic activities to higher order socialization.  These networks affect ourselves, our internal perceptions, our families, our jobs, and politics at every levels.
-
-% These wealth of data creates a wealth of wealth of open problems.  The first problem was ``big data," the notion of data sets too large for traditional computing resources and algorithms.  This has been answered with a tidal wave of hardware, especially distributed systems.  It has also been a boon to optimization research, with complexity calculations become a de facto requirement in the development of new methods.
-
-% Relational learning, which aims to treat entities as being mutually dependent and to perform inference about the dependencies, has always been in conflict with optimization.  The number of relationships to be learned grows quadratically with the number of entities in a network; a social network which doubles in size will quadruple the number of possible relationships.  The value of the data stored in the network, however, also rises as the depth of information about each individual user deepens and as we gain data to make shared inference about groups of users.
-
-% This growth of information is not without danger, however.  The increasing availability data has lead to its increasing misuse, either deliberately (e.g. fraud, surveillance, misinformation) or inadvertently.  Inadvertent misuse can create a variety of problems ranging from classical statistical errors like selection bias to more complex errors like model overfitting creating overconfidence and reliance.  This misuse can occur top-down by powerful actors but also happens, perhaps more commonly, by individual users who are not psychologically aware of the effect of the signals the consume and produce.
-
 In this work, we have examined relational learning in two modes: performing inference on the individuals on the network, and designing systems that are fair for those individuals. 
 
 In Chapter \ref{ch:TopicBlockModel}, we explored how to infer user communities based on the content and volume of their communications. This allows us to make inference about unseen relationships and messages, as well as to make inference about the larger organization represented in the network.
 
-We conceptualized in Chapter \ref{ch:MonoFair} the resentment that individuals can experience when their relative treatment seems ``unfar'' relative to the treatment of other individuals, and explored how existing techniques for monotonic function learning can be used to avert such resentment.
+We conceptualized in Chapter \ref{ch:MonoFair} the resentment that individuals can experience when their relative treatment seems ``unfair'' relative to the treatment of other individuals, and explored how existing techniques for monotonic function learning can be used to avert such resentment.
 
-Since such resentment can happen in more complex ways than monotonic functions can capture, we expanded the concept in Chapter \ref{ch:SoftMonoFair} to use a system of arbiter ratings to learn a preference function over individuals' attributes so that a system can prevent resentment relative to concepts of quality whcih are difficult to directly specify.
+Since such resentment can happen in more complex ways than monotonic functions can capture, we expanded the concept in Chapter \ref{ch:SoftMonoFair} to use a system of arbiter ratings to learn a preference function over individuals' attributes so that a system can prevent resentment relative to concepts of quality which are difficult to directly specify.

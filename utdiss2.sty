@@ -676,8 +676,8 @@
      \supervisornumbercounter=0
     {\loop\ifnum\supervisornumbercounter<\numberofsupervisors
      \advance\supervisornumbercounter by1
-     \signline
-     \vspace*{-18pt}
+    %  \signline
+    %  \vspace*{-18pt}
      \ifnum\supervisornumbercounter=1
 	\leftline{\hbox to 2.53in{}{\supervisora, Supervisor}}
      \fi
@@ -694,8 +694,8 @@
      \membernumbercounter=0
     {\loop\ifnum\membernumbercounter<\numberofmembers
      \advance\membernumbercounter by1
-     \signline
-     \vspace*{-18pt}
+    %  \signline
+    %  \vspace*{-18pt}
      \ifnum\membernumbercounter=1
 	\leftline{\hbox to 2.53in{}{\committeemembera}}
      \fi
@@ -870,7 +870,8 @@
     \centerline{\large\bf by}
     \vspace{25pt}
 %    \centerline{\large\bf\AU@THOR, \previous@degrees}
-    \centerline{\large\bf\au@thor, \previous@degrees}
+    % \centerline{\large\bf\au@thor, \previous@degrees}
+    \centerline{\large\bf\au@thor}
     \vfill
     \begin{center}
     {\bf\DOC@TYPE}\\
@@ -932,7 +933,7 @@
 
     \end{center}
     \vspace*{25pt}
-    \pubnum                                            % (MAL 3/18/98)
+    % \pubnum                                            % (MAL 3/18/98)
     \vspace*{25pt}
     \centerline{\au@thor, \target@degree}                            % <-
     \vspace*{5pt}                                      % (MAL 7/25/98)
@@ -956,7 +957,8 @@
        \fi \fi }
     \end{center} \vskip 15pt
         \default@spacing
-	\indent}
+	\indent
+    }
 %	\noindent}
 
 	% May, 2001 guidelines for Master's explicitly says indent;
