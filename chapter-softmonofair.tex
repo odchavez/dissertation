@@ -1,5 +1,4 @@
 \chapter{Elicited Monotonic Fairness} \label{ch:SoftMonoFair}
-
 \newcommand{\xc}{c}
 
 \section{Overview}
@@ -38,12 +37,12 @@
     The crux of this model is moving from optimizing for the direct prediction of outcomes encompassed by $Y$ to optimizing the relative outcomes encompassed by $Z$.  When we survey our fairness arbiters, we ask them to evaluate whether one individual is more likely ($Z = 1$), less likely ($Z = 2$), or similarly likely ($Z = 3$) than another specific individual to have $Y = 1$.
     
     We can then define a single loss function which incorporates both data sources:
-    $$ \mathcal{L}_Z(Z, \hat{p}, \mathcal{Z}) = \sum\limits_{(i, j)} \left(\begin{array}{l} 
+    $$ \mathcal{L}_Z(Z, \hat{p}, \mathcal{Z}) = \sum\limits_{(i, j) \in \mathcal{Z}} \left(\begin{array}{l} 
         \mathbf{1}_{Z_{ij} = 1} ~ \log\left( \hat{p}_i (1 - \hat{p}_j)  \right) ~ + \\
         \mathbf{1}_{Z_{ij} = 2} ~ \log\left( (1 - \hat{p}_i) \hat{p}_j  \right) ~ + \\
         \mathbf{1}_{Z_{ij} = 3} ~ \log\left(\hat{p}_i \hat{p}_j + (1 - \hat{p}_i)(1 - \hat{p}_j) \right)
         \end{array}\right), \label{eq:sm_pairwise_loss}$$
-    letting $\mathcal{P}$ denote a set of pairs $(i, j)$ of size $|Z|$.
+    letting $\mathcal{Z}$ denote a set of pairs $(i, j)$ of size $|Z|$ indexing over the provided $\hat{p}$.
     
     In the above loss, the components for dissimilar outcomes can be reduced to the traditional log loss of the observed outcomes, i.e. if $Y_i^{obs} = 1$ and $Y_j^{arb}$ then 
         $ \log\left( \hat{p}_i (1 - \hat{p}_j)  \right) = \log\left( \hat{p}_i \right) + \log\left(1 - \hat{p}_j  \right)$ 
@@ -140,7 +139,7 @@
             \includegraphics[width=.45\textwidth]{fig_softmono/compas_lzs_c.png}
             \includegraphics[width=.45\textwidth]{fig_softmono/compas_lf_c.png}
             \includegraphics[width=.45\textwidth]{fig_softmono/compas_lzo_lf.png}
-            \caption{Clockwise from top left: Pairwise loss on observed data $\mathcal{L}_Z^{obs}$  as a function of $c$, pairwise loss on arbiter data $\mathcal{L}_Z^{arb}$ as a function of $c$, group fairness loss $\mathcal{L}_F$ as a function of $c$, and $\mathcal{L}_Z^{obs}$ as a function of group fairness loss $\mathcal{L}_F$.  Lines represent three random training runs with $\lambda_f = 0.001$.  Marker size is proportionate to $c$.}
+            \caption{Clockwise from top left: Pairwise loss on observed data $\mathcal{L}_Z^{obs}$  as a function of $c$, pairwise loss on arbiter data $\mathcal{L}_Z^{arb}$ as a function of $c$, group fairness loss $\mathcal{L}_F$ as a function of $c$, and $\mathcal{L}_Z^{obs}$ as a function of group fairness loss $\mathcal{L}_F$.  Lines represent three random training runs with $\lambda_f = 0.001$.  Marker size is proportionate to $c$. Different lines are fits from different random initializations.}
             \label{fig:sm_compas_tradeoffs}
         \end{figure}
         
@@ -148,7 +147,7 @@
         
         An interesting anomaly, however, is the trend for the pairwise loss on arbiter data $\mathcal{L}_Z^{arb}$ (top right), which is highest at $c = 1$ when we would naively expect it to be lowest.  Counterintuitively, this is explained by the fact that the arbiter ratings, which are assumed to be fair w.r.t.~resentment but are in fact severely biased w.r.t group fairness.  For instance, despite being unaware of race, arbiters' views on relative treatment led them to rate the non-protected attributes of African-Americans as more likely to re-offend than those of Caucasians on average; in the 105 ratings where they gave a dissimilar rating for an African-American and Caucasian pairing, they rated the African American defendant's non-protected attributes as more likely to re-offend 68 times (65\%). The result of this contradiction in arbiter-based individual fairness and group fairness is predictable: one of them dominates when $c=1$, and in this case it is group fairness, likely due to loss scaling.  
         
-        Another factor causing $\mathcal{L}_Z^{arb}$ to be lower towards $c=0$: the arbiters are actually fairly accurate.  Of the 164 dissimilar ratings given, 128 ratings (78\%) were directionally correct, which is comparable accuracy to a roughly three point difference on the COMPAS decile score system, despite COMPAS having access to additional attributes (both protected and other) that we didn't reveal to the arbiters. This relatively high accuracy of arbiter ratings allows them to act as additional information for training the structure of the classifer, improving the accuracy when $c=0$ (and $c$ \emph{near} 0), even if no loss considers the accuracy of arbiter ratings when $c = 0$. 
+        Another factor causing $\mathcal{L}_Z^{arb}$ to be lower towards $c=0$: the arbiters are actually fairly accurate.  Of the 164 dissimilar ratings given, 128 ratings (78\%) were directionally correct, which is comparable accuracy to a roughly three point difference on the COMPAS decile score system, despite COMPAS having access to additional attributes (both protected and other) that we didn't reveal to the arbiters. We hypothesize that the relatively high accuracy of arbiter ratings allows them to act as additional information for training the structure of the classifer, improving the accuracy when $c=0$ (and $c$ \emph{near} 0), even if no loss considers the accuracy of arbiter ratings when $c = 0$. 
         
     \section{Discussion}\label{sec:sm_discussion}
     

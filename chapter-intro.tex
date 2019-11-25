@@ -16,9 +16,9 @@ This growth of information is not without danger, however.  The increasing avail
 
 Chapter \ref{ch:TopicBlockModel} explores a model which combines the intuitive content description of topic modelling with the user archetyping of a stochastic blockmodel.  The combination allows us to describe contextual relationships of users (nodes) in the network and the content typical of the messages they exchange.
 
-The crux of the model is the intuition that one homogeneous group of individuals should behave similarly when interacting with another homogeneous group of individuals.  This reduces the complexity of modeling in two ways.  First, rather than modeling $n$ individuals, we can model $k \ll n$ clusters of people, and rather than constructing $n^2$ models for interactions, we can model $k^2$ archetypal message patterns.  This greatly reduces the state space of models, which assists in fighting the enemy of $\mathcal{O}(n^2)$ complexity.  
+The crux of the model is the intuition that individuals in one homogeneous group should behave similarly when interacting with individuals of another homogeneous group.  This reduces the complexity of modeling in two ways.  First, rather than modeling $n$ individuals, we can model $k \ll n$ clusters of people, and rather than constructing $n^2$ models for interactions, we can model $k^2$ archetypal message patterns.  This greatly reduces the state space of models, which assists in fighting the enemy of $\mathcal{O}(n^2)$ complexity.  
 
-Second, this model allows us to make inference about individual's interactions which have not yet been observed.  For instance, when trying to make service recommendations to an individual who has not visited a business previously, it would be useful to know how that individual has interacted with other stores, and how other individuals like this one has interacted the the store at hand.
+Second, this model allows us to make inference about individuals' interactions which have not yet been observed.  For instance, when trying to make service recommendations to an individual who has not visited a business previously, it would be useful to know how that individual has interacted with other stores, and how other individuals like this one has interacted the the store at hand.
 
 
 
